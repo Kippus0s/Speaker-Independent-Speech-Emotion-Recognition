@@ -1,6 +1,6 @@
 # Speaker-Independent Speech Emotion Recognition
 My Bachelor's of Science Computing & IT final project was entitled "Investigating Machine Learning and Deep Learning approaches to Speech Emotion Recognition".
-Uploaded here is an updated version of said project, designed to be more accessible, maintainable, and for for reproducibility. 
+Uploaded here is an updated and refactored version of said project, designed to be more accessible, maintainable, and for for reproducibility. 
 
 # Project Summary 
 
@@ -51,9 +51,19 @@ To test a model, you must first preprocess the dataset by running preprocess_dat
 
 ```
 First argument: The name of the dataset in lower case. Options are: emodb iemocap ravdess saveee
-Second argument: The sample rate. This must be entered as 16000 and not 16k 
-Third argument: An integer denoting duration in seconds to trim or pad each sample to. This is because all samples must be the same duration to be used as training data by tensorflow.
-Fourth argument: The Z_score normalisation flag. There is a normalisation layer in the model architecture, but this applies z_score normalisation per batch and after the length of each sample (and any other optional data preprocessing) has occured. To toggle this on or off enter y or n as the value for the fourth argument.
+
+Second argument: The sample rate. This must be entered as 16000 and not 16k
+
+Third argument: An integer denoting duration in seconds to trim or pad each sample to.
+All samples must be the same duration to be used as training data by tensorflow.
+
+Fourth argument: The Z_score normalisation flag. y or n
+This applies z-score normalisation int he preprocessing stage.
+There is a normalisation layer in the model architecture,
+but this normalised per batch and after samples have been preprocessed
+
+You may find it worth experimenting with using neither, or one or both of the
+normalisation steps depending on other factors. 
 
 Example: python dataset_preprocess.py emodb 16000 4 y
 ```
