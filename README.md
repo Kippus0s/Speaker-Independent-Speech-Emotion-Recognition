@@ -45,28 +45,6 @@ Latif, 2019 (60.23% UAR)
 Vladimir Chernykh, 2018 (54% Accuracy)
 ```
 
-# Instructions
-
-To test a model, you must first preprocess the dataset by running preprocess_dataset.py in the command line with the following four arguments:
-
-```
-First argument: The name of the dataset in lower case. Options are: emodb iemocap ravdess saveee
-
-Second argument: The sample rate. This must be entered as 16000 and not 16k
-
-Third argument: An integer denoting duration in seconds to trim or pad each sample to.
-All samples must be the same duration to be used as training data by tensorflow.
-
-Fourth argument: The Z_score normalisation flag. y or n
-This applies z-score normalisation int he preprocessing stage.
-There is a normalisation layer in the model architecture,
-but this normalised per batch and after samples have been preprocessed
-
-You may find it worth experimenting with using neither, or one or both of the
-normalisation steps depending on other factors. 
-
-Example: python dataset_preprocess.py emodb 16000 4 y
-```
 
 ### Dependencies 
 The following python packages should be installed
@@ -86,3 +64,31 @@ scikit-learn 1.7.0
 sklearn-preprocessing 0.1.0
 audiomentations 0.41.0
 ```
+# Instructions
+
+
+Download the csv files relevant for the datasets you are interested in, including: emodb.csv iemocap.csv savee.csv and ravdess.csv 
+Place these csv files in your porject directory
+Acquire and extract datasets into the project directory, the root folder of each dataset that should be in the project directory at the same level as the csv files mentioned above are "EmoDB" , "IEMOCAP_full_release_withoutVideos" , "RAVDESS" and "SAVEE"
+
+If you wish to modify a datasets before preprocessing, you must iterate over the entire dataset again and populate a new csv, as this script utilises a csv with file paths to each audio file, rather than recursively exploring the dataset directories. 
+
+To test a model, you must first preprocess the dataset by running preprocess_dataset.py in the command line with the following four arguments explained below: 
+
+```
+First argument: The name of the dataset in lower case. Options are: emodb iemocap ravdess saveee
+
+Second argument: The sample rate. This must be entered as 16000 and not 16k
+
+Third argument: An integer denoting duration in seconds to trim or pad each sample to.
+All samples must be the same duration to be used as training data by tensorflow.
+
+Fourth argument: The Z_score normalisation flag. y or n
+This applies z-score normalisation int he preprocessing stage.
+There is a normalisation layer in the model architecture,
+but this normalised per batch and after samples have been preprocessed
+
+You may find it worth experimenting with using neither, or one or both of the
+normalisation steps depending on other factors. 
+
+Example: python dataset_preprocess.py emodb 16000 4 y
