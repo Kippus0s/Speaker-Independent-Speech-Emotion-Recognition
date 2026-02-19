@@ -75,7 +75,7 @@ If you wish to modify a datasets before preprocessing, you must iterate over the
 
 4. To test a model, you must first preprocess the dataset by running preprocess_dataset.py in the command line with the following four arguments explained below:
 5. Run the model training script on the preprocessed dataset (TO BE COMPLETED)
-6. ``` ie: python train emodb ```
+6. ``` ie: python modelname_train.py emodb ```
 
 ```
 First argument: The name of the dataset in lower case. Options are: emodb iemocap ravdess saveee
