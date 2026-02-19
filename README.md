@@ -67,13 +67,14 @@ audiomentations 0.41.0
 # Instructions
 
 
-Download the csv files relevant for the datasets you are interested in, including: emodb.csv iemocap.csv savee.csv and ravdess.csv 
-Place these csv files in your porject directory
-Acquire and extract datasets into the project directory, the root folder of each dataset that should be in the project directory at the same level as the csv files mentioned above are "EmoDB" , "IEMOCAP_full_release_withoutVideos" , "RAVDESS" and "SAVEE"
+1. Download the csv files relevant for the datasets you are interested in, including: emodb.csv iemocap.csv savee.csv and ravdess.csv 
+2. Place these csv files in your porject directory
+3. Acquire and extract datasets into the project directory, the root folder of each dataset that should be in the project directory at the same level as the csv files mentioned above are "EmoDB" , "IEMOCAP_full_release_withoutVideos" , "RAVDESS" and "SAVEE"
 
 If you wish to modify a datasets before preprocessing, you must iterate over the entire dataset again and populate a new csv, as this script utilises a csv with file paths to each audio file, rather than recursively exploring the dataset directories. 
 
-To test a model, you must first preprocess the dataset by running preprocess_dataset.py in the command line with the following four arguments explained below: 
+4. To test a model, you must first preprocess the dataset by running preprocess_dataset.py in the command line with the following four arguments explained below:
+5. Run the model training script on the preprocessed dataset (TO BE COMPLETED) ie: python train emodb 
 
 ```
 First argument: The name of the dataset in lower case. Options are: emodb iemocap ravdess saveee
