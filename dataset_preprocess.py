@@ -20,10 +20,12 @@ import numpy as np
 import librosa as lr
 import librosa.display
 import soundfile as sf
-#Arguments 
-#python dataset_preprocess.py emodb 16000 4 y
 
-#takeargs
+#Arguments 
+# ex. " python dataset_preprocess.py emodb 16000 4 y " 
+
+# takeargs from command line, which dataset, sample rate, sample duration, whether to z-score normalise or not (y/n)
+# With exception handling and attempts to alert user of incorrect arguments
 
 try:
     which_dataset = sys.argv[1]
@@ -37,7 +39,7 @@ except ValueError:
     sys.exit(1)
 
 
-#WHICH_DATASET
+# CHECKING CORRECT NAME OF DATASET
 if which_dataset not in ["emodb", "iemocap", "ravdess", "savee"]:
     raise ValueError(
         "Incorrect dataset provided, options are: emodb, iemocap, ravdess, savee"
@@ -45,7 +47,8 @@ if which_dataset not in ["emodb", "iemocap", "ravdess", "savee"]:
 
 print("Dataset selected:", which_dataset)
 
-     
+# AlertingALERTING USER OF SAMPLE RATE ARGUMENT EXCEEDING NATIVE SAMPLE RATE
+
 if which_dataset == "ravdess":
      if SAMPLE_RATE > 48000:
           flag = input("RAVDESS sample rate of source files are 48khz, this script does not upsample Are you sure you wish to proceed? (y/n)")
@@ -58,12 +61,7 @@ else:
           if flag != 'y':
                sys.exit()
 
-
-try:
-    SAMPLE_DURATION = int(sys.argv[3])
-except ValueError:
-    raise TypeError("Sample duration must be an integer")
-
+# Z_score normalisation argument check
 try:
     z_score = sys.argv[4]
 except IndexError:
@@ -73,7 +71,7 @@ if z_score not in ['y', 'n']:
      raise TypeError("z-score normalisation must be either 'y' or 'n'")
 
 
-#constants for Mel/MFCC creation
+# Define constants for Mel Spectrogram and MFCC creation
   
 FRAME_WIDTH = 512 # increase to 512 now 
 NUM_SPECTROGRAM_BINS = 512 # 512 is recommended for speech (default is 2048 and suited for music)
@@ -82,7 +80,7 @@ LOWER_EDGE_HERTZ = 80.0 # Human speech is not lower
 UPPER_EDGE_HERTZ = 7600.0 # Higher is inaudbile to humans   
 N_MFCC = 40
 
-#
+
 # Dataset preprocessing 
 # Go through dataset and convert sample rate, Trim or pad to a uniform duration, normalise via zero mean and unit variance 
 # Create the Mel spectrogram and MFCCs from the duration-adjusted and normalised samples
@@ -172,35 +170,6 @@ def audio_file_parser(file):
                "finish this soon"
           print("audio file path: ", audio_file_path)
           return audio_file_path
-
-
-def folder_recreator(file):
-
-     if dataset_name == "SAVEE":
-          relative_path = os.path.relpath(file, dataset_path)
-          sub_dirs = os.path.dirname(relative_path)
-          if not os.path.exists(sub_dirs): #NOT FINISHED YET ! 
-               os.makedirs(sub_dir)
-               print("Directory created successfully!")
-
-     if dataset_name == "IEMOCAP":
-          for _, row in df.iterrows():     
-               file = df['file'].iloc[_]   
-
-               #Creating directory structure from the original dataset structure in the new folder structure. 
-               if file[30] == "s": #its script not impro
-                    sub_dir = os.path.join(out_path,file[:41]) #its script, works
-                    #print("script subdir =", sub_dir)
-               else: sub_dir = os.path.join(out_path,file[:38]) #its impro, works        
-               if not os.path.exists(sub_dir):
-                    os.makedirs(sub_dir)
-                    print("Directory created successfully!") 
-
-               filepath = os.path.join(dataset_path,file)
-               print("filepath 1=:",filepath)
-               new_filepath = os.path.join(out_path,file) #the file slice give sjust the filename without directory path
-               print("new filepath: ", new_filepath)
-
 
 def trim_wave(wave):
      duration = int(SAMPLE_DURATION) * SAMPLE_RATE
@@ -310,11 +279,11 @@ def norm_script():
           if lr.get_duration(y=y,sr=sr) > SAMPLE_DURATION:
                trimmed_wave = trim_wave(y_norm)
                save_output(trimmed_wave,file)
-               print(file," saved")
+               
           else: 
                padded_wave = pad_wave(y_norm)
                save_output(padded_wave,file)
-               print(file," saved")
+               
 
 
      for index, file in enumerate(df['file'].values):   
@@ -327,9 +296,9 @@ def norm_script():
      
 def mel_mfcc():
      #Creating Mel and MFCCs. 
- 
+     dataset_path = DATASET_PATH  
 
-     dataset_path = DATASET_PATH  #Take the trimmed/padded sound files 
+     # Creating the mel and mfcc directories in the output folder if they do not already exist.
      mel_path = os.path.join(out_path, "mel")
      mfcc_path = os.path.join(out_path, "mfccs")
      if not os.path.exists(mel_path):
@@ -337,43 +306,33 @@ def mel_mfcc():
      if not os.path.exists(mfcc_path):
           os.makedirs(mfcc_path)
      
-
+     # Take the trimmed/padded sound files 
      for file in pd.read_csv(csv_path)['file'].values:
-          print("file =", file)
 
-          audio_file = audio_file_parser(file)  
-          print("audio file = ", audio_file)
+          audio_file = audio_file_parser(file)            
           samples, sample_rate = librosa.load(audio_file, sr=SAMPLE_RATE)
     
           #Create spectrogram
           sgram = librosa.stft(samples,n_fft=NUM_SPECTROGRAM_BINS) 
           print("sgram created")
 
-
-          # use the mel-scale instead of raw frequency on
+          # Use the mel-scale instead of raw frequency bins, as the mel scale is more aligned with human perception of sound and is commonly used in speech processing tasks.
           sgram_mag, _ = librosa.magphase(sgram)
           mel_scale_sgram = librosa.feature.melspectrogram(S=sgram_mag, n_fft= FRAME_WIDTH,
                                                        sr=sample_rate,fmin=LOWER_EDGE_HERTZ,fmax=UPPER_EDGE_HERTZ,
                                                        n_mels = NUM_MEL_BINS)
           librosa.display.specshow(mel_scale_sgram)
 
-          # use the decibel scale to get the final Mel Spectrogram, as the human hear perceives loudness this way
+          # Use the decibel scale to get the final Mel Spectrogram, as the human ear perceives loudness this way
           mel_sgram = librosa.amplitude_to_db(mel_scale_sgram, ref=np.min) 
           
-
-          # Saving the mel spectrogram and MFCCs as .npy files, with the same filename as the original audio file but with .npy extension, in the appropriate folders.
-          subdirs = os.path.dirname(os.path.normpath(file))       # e.g., "wav"
-          filename = os.path.splitext(os.path.basename(file))[0]  # e.g., "03a01Fa"                      # e.g., "03a01Fa.wav" Removes extension
-          
-          
-
+          # Creating the correct file path string to preserve original dataset directory structure in the new folders for the mel spectrograms and MFCCs.
+          subdirs = os.path.dirname(os.path.normpath(file))       
+          filename = os.path.splitext(os.path.basename(file))[0]  
+                  
           mel_save_dir = os.path.join(mel_path, subdirs)
           mfcc_save_dir = os.path.join(mfcc_path, subdirs)
-          #np.save(os.path.join(mel_path, str(file)[:-4]),mel_sgram)
-
-          #print("Creating directories:")
-          print("mel_save_dir =", mel_save_dir)
-          print("mfcc_save_dir =", mfcc_save_dir)
+                    
           try:
                os.makedirs(mel_save_dir, exist_ok=True)
                os.makedirs(mfcc_save_dir, exist_ok=True)
@@ -389,9 +348,7 @@ def mel_mfcc():
           np.save(mfcc_save_path, mfccs)
           print("saved", mfccs, "MFCCs to ", mfcc_save_path)
           
-          #mfccs = librosa.feature.mfcc(S=mel_sgram,sr=SAMPLE_RATE,n_mfcc=N_MFCC)
-          #np.save(os.path.join(mfcc_path, str(file)[:-4]),mfccs)      
-
+          
      #Write path to the mel-spectrograms and mffcs for each utterance to the appropriate row in the CSV
      for index, file in enumerate(df['file'].values):   
           df.loc[index, 'mel_spectrogram'] = os.path.join(mel_path,str(file)[4:-4]+".npy")
