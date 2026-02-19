@@ -12,6 +12,7 @@
 #     /EmoDB/
 #     /SAVEE/
 #etc. Slashes need to be changed to forward slashes if running on windows. But the training process requires linux anyway */ 
+from importlib.resources import files
 import sys
 import os 
 import pandas as pd
@@ -23,10 +24,54 @@ import soundfile as sf
 #python dataset_preprocess.py emodb 16000 4 y
 
 #takeargs
-which_dataset = sys.argv[1]
-SAMPLE_RATE = int(sys.argv[2])
-SAMPLE_DURATION = int(sys.argv[3])
-z_score = sys.argv[4] #Flag for performing z-score normalisation at the data preprocessing stage. This should be y or n 
+
+try:
+    which_dataset = sys.argv[1]
+    SAMPLE_RATE = int(sys.argv[2])
+    SAMPLE_DURATION = int(sys.argv[3])
+except IndexError:
+    print("Missing required arguments")
+    sys.exit(1)
+except ValueError:
+    print("Sample rate and duration must be integers")
+    sys.exit(1)
+
+
+#WHICH_DATASET
+if which_dataset not in ["emodb", "iemocap", "ravdess", "savee"]:
+    raise ValueError(
+        "Incorrect dataset provided, options are: emodb, iemocap, ravdess, savee"
+    )
+
+print("Dataset selected:", which_dataset)
+
+     
+if which_dataset == "ravdess":
+     if SAMPLE_RATE > 48000:
+          flag = input("RAVDESS sample rate of source files are 48khz, this script does not upsample Are you sure you wish to proceed? (y/n)")
+     if flag != 'y':
+          sys.exit()
+     
+else:
+     if SAMPLE_RATE > 16000:
+          flag = input("sample rate of source files are 16khz, this script does not upsample Are you sure you wish to proceed? (y/n)")
+          if flag != 'y':
+               sys.exit()
+
+
+try:
+    SAMPLE_DURATION = int(sys.argv[3])
+except ValueError:
+    raise TypeError("Sample duration must be an integer")
+
+try:
+    z_score = sys.argv[4]
+except IndexError:
+    z_score = 'n'  # Default value if not provided
+
+if z_score not in ['y', 'n']:
+     raise TypeError("z-score normalisation must be either 'y' or 'n'")
+
 
 #constants for Mel/MFCC creation
   
@@ -37,37 +82,42 @@ LOWER_EDGE_HERTZ = 80.0 # Human speech is not lower
 UPPER_EDGE_HERTZ = 7600.0 # Higher is inaudbile to humans   
 N_MFCC = 40
 
-#Dataset preprocessing 
+#
+# Dataset preprocessing 
 # Go through dataset and convert sample rate, Trim or pad to a uniform duration, normalise via zero mean and unit variance 
 # Create the Mel spectrogram and MFCCs from the duration-adjusted and normalised samples
 # Split dataset into training/validation/test 
 
-#To preprocess I iterate through a CSV, The csv's are provided with this script so they do not need to be rebuilt, however they include 
+#
+# To preprocess I iterate through a CSV, The csv's are provided with this script so they do not need to be rebuilt, however they include 
 # directory paths and so this is why the original structure of the dataset needs to be preserved
 # The CSV needs to be in same root folder as this script 
 #Should specify in readme these folders should be for IEMOCAP "IEMOCAP_full_release", etc, to avoid confusion. 
 
 
 if which_dataset == "emodb":
-     DATASET_PATH = "EmoDB/wav"
-     os.path.join("EMODB", "wav")
      dataset_name = "EmoDB" # Simply so the cmdline argument need not be caps-sensitive, but this way it preserves the capitalisation of the original dataset. 
-     csv_path = "emodb.csv"        
+     data_path = os.path.join(os.getcwd(), dataset_name)
+     DATASET_PATH = "EmoDB"
+     csv_path = os.path.join(os.getcwd(), "emodb.csv")     
      
 elif which_dataset == "iemocap":
-     DATASET_PATH = "IEMOCAP_full_release"
      dataset_name = "IEMOCAP"
+     data_path = os.path.join(os.getcwd(), dataset_name)
+     DATASET_PATH = "IEMOCAP_full_release"     
      csv_path = "iemocap.csv"
      
 elif which_dataset == "ravdess":
-     DATASET_PATH = "RAVDESS"
      dataset_name = "RAVDESS"
+     data_path = os.path.join(os.getcwd(), dataset_name)
+     DATASET_PATH = data_path
      csv_path = "ravdess.csv"
      
 elif which_dataset == "savee":
-     DATASET_PATH = "SAVEE/AudioData"
      dataset_name = "SAVEE"
-     csv_path = "savee.csv"
+     data_path = os.path.join(os.getcwd(), dataset_name)
+     DATASET_PATH = os.path.join(dataset_name, "AudioData")
+     csv_path = os.path.join(os.getcwd(), "savee.csv")
      
      
 else:
@@ -83,72 +133,18 @@ else:
 
 df = pd.read_csv(csv_path)
 
-# --- Top-level utilities (lifted from nested functions to simplify testing and reuse) ---
+# Validation split constant
+# These are the speakers I used for my study, but experiementation with different splits, or cross-validation is welcome
+# Rather than perform cross-validation, I performed a simple single-pass speaker-independent validation
+# Cross-validation would be preferable, but it is far more time-consuming to complete
+# The models went through many iterations and 
+
 DATASET_SPEAKER_DEFAULTS = {
      'emodb': {'val_speaker': [3], 'test_speaker': [8]},
      'iemocap': {'val_speaker': ['1_F'], 'test_speaker': ['1_M']},
      'ravdess': {'val_speaker': ['Actor_01', 'Actor_02'], 'test_speaker': ['Actor_03', 'Actor_04']},
-     'savee': {'val_speaker': ['DC'], 'test_speaker': ['JE']},
+     'savee': {'val_speaker': ['DC'], 'test_speaker': ['JE']},# I concatenate val and train in model config for a 75% train/test split instead.
 }
-
-def split_data(df, which_dataset, out_dir=None, val_speaker=None, test_speaker=None,
-               speaker_column='speaker', filename_columns=None):
-     """Split dataframe by speaker into train/val/test and save CSVs.
-
-     This enforces speaker-based splits only (no fraction fallback). Defaults are
-     taken from DATASET_SPEAKER_DEFAULTS and must be edited in-code for
-     reproducibility of experiments.
-     """
-     import os
-
-     if filename_columns is None:
-          filename_columns = ['file', 'mel_spectrogram', 'MFCCs', 'duration_adjusted']
-
-     if out_dir is None:
-          out_dir = os.path.join(which_dataset, 'data')
-     os.makedirs(out_dir, exist_ok=True)
-
-     ds_key = which_dataset.lower() if isinstance(which_dataset, str) else which_dataset
-     ds_defaults = DATASET_SPEAKER_DEFAULTS.get(ds_key, {})
-     if val_speaker is None:
-          val_speaker = ds_defaults.get('val_speaker')
-     if test_speaker is None:
-          test_speaker = ds_defaults.get('test_speaker')
-
-     if val_speaker is None or test_speaker is None:
-          raise ValueError("Speaker-based split required. Provide val_speaker and test_speaker or add dataset defaults.")
-
-     if speaker_column not in df.columns:
-          raise KeyError(f"Expected speaker column '{speaker_column}' in dataframe. Found columns: {list(df.columns)}")
-
-     def _to_list(x):
-          if x is None:
-               return []
-          if isinstance(x, (list, tuple, set)):
-               return list(x)
-          return [x]
-
-     val_list = _to_list(val_speaker)
-     test_list = _to_list(test_speaker)
-
-     excluded = set(val_list + test_list)
-     df_train = df[~df[speaker_column].isin(excluded)].reset_index(drop=True)
-     df_val = df[df[speaker_column].isin(val_list)].reset_index(drop=True)
-     df_test = df[df[speaker_column].isin(test_list)].reset_index(drop=True)
-
-     train_csv = os.path.join(out_dir, 'train.csv')
-     val_csv = os.path.join(out_dir, 'val.csv')
-     test_csv = os.path.join(out_dir, 'test.csv')
-
-     df_train.to_csv(train_csv, index=False)
-     df_val.to_csv(val_csv, index=False)
-     df_test.to_csv(test_csv, index=False)
-
-     print(f"Train samples: {len(df_train)} -> {train_csv}")
-     print(f"Validation samples: {len(df_val)} -> {val_csv}")
-     print(f"Test samples: {len(df_test)} -> {test_csv}")
-
-     return df_train, df_val, df_test
 
 
 def listwavs(dataframe):
@@ -159,11 +155,51 @@ def listwavs(dataframe):
      """
      list_wavs = []
      for file in dataframe['file']:
-          audio_file_path = os.path.join(dataset_path, file[4:])
-          print("audio file path: ", audio_file_path)
+          audio_file_path = audio_file_parser(file)
           x, _ = lr.load(audio_file_path, sr=SAMPLE_RATE)
           list_wavs.append(x)
      return list_wavs
+
+def audio_file_parser(file):
+          if dataset_name == "EmoDB":
+               audio_file_path = os.path.join(dataset_path, os.path.normpath(file))
+          elif dataset_name == "SAVEE":
+               audio_file_path = os.path.join(dataset_path, os.path.normpath(file) + ".wav")
+               print("normpath(file) gives ", os.path.normpath(file))
+          elif dataset_name == "RAVDESS":
+               audio_file_path = os.path.join(dataset_path, file[0:8], file[9:])               
+          else:
+               "finish this soon"
+          print("audio file path: ", audio_file_path)
+          return audio_file_path
+
+
+def folder_recreator(file):
+
+     if dataset_name == "SAVEE":
+          relative_path = os.path.relpath(file, dataset_path)
+          sub_dirs = os.path.dirname(relative_path)
+          if not os.path.exists(sub_dirs): #NOT FINISHED YET ! 
+               os.makedirs(sub_dir)
+               print("Directory created successfully!")
+
+     if dataset_name == "IEMOCAP":
+          for _, row in df.iterrows():     
+               file = df['file'].iloc[_]   
+
+               #Creating directory structure from the original dataset structure in the new folder structure. 
+               if file[30] == "s": #its script not impro
+                    sub_dir = os.path.join(out_path,file[:41]) #its script, works
+                    #print("script subdir =", sub_dir)
+               else: sub_dir = os.path.join(out_path,file[:38]) #its impro, works        
+               if not os.path.exists(sub_dir):
+                    os.makedirs(sub_dir)
+                    print("Directory created successfully!") 
+
+               filepath = os.path.join(dataset_path,file)
+               print("filepath 1=:",filepath)
+               new_filepath = os.path.join(out_path,file) #the file slice give sjust the filename without directory path
+               print("new filepath: ", new_filepath)
 
 
 def trim_wave(wave):
@@ -179,11 +215,33 @@ def pad_wave(wave):
      return np.pad(wave, (0, padding), 'constant')
 
 
-def save_output(wave, filename):
+def save_output2(wave, filename):
      # Write out audio as 24bit PCM WAV to out_path
      filename = os.path.join(out_path, filename)
+     
      sf.write(filename, wave, SAMPLE_RATE, subtype='PCM_24')
 
+
+def save_output(wave,   filename):
+
+     subdirs = os.path.dirname(os.path.normpath(filename))       
+     
+     filename = os.path.splitext(os.path.basename(filename))[0] + ".wav"
+     
+     save_dir = os.path.join(out_path, subdirs)
+          
+     print("Creating directories:")
+     print("save_dir =", save_dir)
+     
+     try:
+          os.makedirs(save_dir, exist_ok=True)
+          
+     except Exception as e:
+          print("Error creating directories:", e)
+         
+     
+     full_path = os.path.join(save_dir, filename)
+     sf.write(full_path, wave, SAMPLE_RATE, subtype='PCM_24')
 
 def data_split():
           val_speaker = DATASET_SPEAKER_DEFAULTS[which_dataset]['val_speaker']
@@ -194,12 +252,15 @@ def data_split():
           df_train = df[~df['speaker'].isin(val_speaker)].reset_index(drop=True)
           df_train = df_train[~df_train['speaker'].isin(test_speaker)].reset_index(drop=True)
 
+          if not os.path.exists(data_path):
+               os.makedirs(data_path)
+               
 
-          df_train.to_csv('train.csv', index=False)
+          df_train.to_csv(os.path.join(data_path,'train.csv'), index=False)
           print(df_train.isna().sum())  # total NaNs per column)
-          df_val.to_csv('val.csv', index=False)
+          df_val.to_csv(os.path.join(data_path,'val.csv'), index=False)
           print(df_val.isna().sum())  # total NaNs per column)
-          df_test.to_csv('test.csv', index=False)
+          df_test.to_csv(os.path.join(data_path,'test.csv'), index=False)
           print(df_test.isna().sum())  # total NaNs per column)
 
           print(f"Train samples: {len(df_train)}")
@@ -216,17 +277,16 @@ def data_split():
           print(len(df_val))
           print(len(df_test))
 
-data_split()     
+  
 
 # Defining the functions for dataset preprocessing
 def norm_script():     
 
      #Z-score normalisation
-     
-     
+          
      #Now we compute the mean and std from the training data in order to fit
-     dataset_path = './' + DATASET_PATH
-     globalaudio = np.concatenate(listwavs(pd.read_csv("train.csv")))
+     dataset_path = os.path.join(os.getcwd(), DATASET_PATH)
+     globalaudio = np.concatenate(listwavs(pd.read_csv(os.path.join(dataset_name, "train.csv"))))
      mean = np.mean(globalaudio)
      std = np.std(globalaudio)
      print("Progress: global values for z-score normalisation calculated")
@@ -234,10 +294,10 @@ def norm_script():
 
      #Applying functions
     
-     for file in os.listdir(dataset_path):
+     for file in pd.read_csv(csv_path)['file'].values:
           print("file =", file)
 
-          audio_file = os.path.join(dataset_path,file)        
+          audio_file = audio_file_parser(file)  
           print("audio file = ", audio_file)
           y,sr = lr.load(audio_file,sr=SAMPLE_RATE)  
           #Normalise via zero mean and 1 unit variance if z-score at this stage is selected
@@ -264,9 +324,10 @@ def norm_script():
      print("Progress: Z-score normalisation and fixing of sample duration completed")
 
 
+     
+def mel_mfcc():
      #Creating Mel and MFCCs. 
-
-   
+ 
 
      dataset_path = DATASET_PATH  #Take the trimmed/padded sound files 
      mel_path = os.path.join(out_path, "mel")
@@ -277,13 +338,16 @@ def norm_script():
           os.makedirs(mfcc_path)
      
 
-     for file in os.listdir(dataset_path):
-          audio_file = os.path.join(dataset_path,file)    
-          print(str(audio_file))
+     for file in pd.read_csv(csv_path)['file'].values:
+          print("file =", file)
+
+          audio_file = audio_file_parser(file)  
+          print("audio file = ", audio_file)
           samples, sample_rate = librosa.load(audio_file, sr=SAMPLE_RATE)
     
           #Create spectrogram
-          sgram = librosa.stft(samples,n_fft=NUM_SPECTROGRAM_BINS)  
+          sgram = librosa.stft(samples,n_fft=NUM_SPECTROGRAM_BINS) 
+          print("sgram created")
 
 
           # use the mel-scale instead of raw frequency on
@@ -295,10 +359,38 @@ def norm_script():
 
           # use the decibel scale to get the final Mel Spectrogram, as the human hear perceives loudness this way
           mel_sgram = librosa.amplitude_to_db(mel_scale_sgram, ref=np.min) 
-          #Now we should have an actual mel spectrogram
-          np.save(os.path.join(mel_path, str(file)[:-4]),mel_sgram)
+          
+
+          # Saving the mel spectrogram and MFCCs as .npy files, with the same filename as the original audio file but with .npy extension, in the appropriate folders.
+          subdirs = os.path.dirname(os.path.normpath(file))       # e.g., "wav"
+          filename = os.path.splitext(os.path.basename(file))[0]  # e.g., "03a01Fa"                      # e.g., "03a01Fa.wav" Removes extension
+          
+          
+
+          mel_save_dir = os.path.join(mel_path, subdirs)
+          mfcc_save_dir = os.path.join(mfcc_path, subdirs)
+          #np.save(os.path.join(mel_path, str(file)[:-4]),mel_sgram)
+
+          #print("Creating directories:")
+          print("mel_save_dir =", mel_save_dir)
+          print("mfcc_save_dir =", mfcc_save_dir)
+          try:
+               os.makedirs(mel_save_dir, exist_ok=True)
+               os.makedirs(mfcc_save_dir, exist_ok=True)
+          except Exception as e:
+               print("Error creating directories:", e)
+               continue  # skip this file
+
+          mel_save_path = os.path.join(mel_save_dir, filename + ".npy")  # ensure .npy extension
+          np.save(mel_save_path, mel_sgram)
+          print("saved mel spectrogram to", mel_save_path)
+          mfcc_save_path = os.path.join(mfcc_save_dir, filename + ".npy")
           mfccs = librosa.feature.mfcc(S=mel_sgram,sr=SAMPLE_RATE,n_mfcc=N_MFCC)
-          np.save(os.path.join(mfcc_path, str(file)[:-4]),mfccs)      
+          np.save(mfcc_save_path, mfccs)
+          print("saved", mfccs, "MFCCs to ", mfcc_save_path)
+          
+          #mfccs = librosa.feature.mfcc(S=mel_sgram,sr=SAMPLE_RATE,n_mfcc=N_MFCC)
+          #np.save(os.path.join(mfcc_path, str(file)[:-4]),mfccs)      
 
      #Write path to the mel-spectrograms and mffcs for each utterance to the appropriate row in the CSV
      for index, file in enumerate(df['file'].values):   
@@ -307,7 +399,7 @@ def norm_script():
 
      df.to_csv(which_dataset + "preprocessed_with_mel_mfcc.csv")
 
-
      
-
+data_split()   
 norm_script()
+mel_mfcc()
