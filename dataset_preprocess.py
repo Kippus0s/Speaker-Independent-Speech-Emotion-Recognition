@@ -11,7 +11,7 @@
 #Ie .\this_script.py
 #     /EmoDB/
 #     /SAVEE/
-#etc. Slashes need to be changed to forward slashes if running on windows. But the training process requires linux anyway */ 
+
 from importlib.resources import files
 import sys
 import os 
@@ -39,7 +39,7 @@ except ValueError:
     sys.exit(1)
 
 
-# CHECKING CORRECT NAME OF DATASET
+# Checking correct dataset argument name
 if which_dataset not in ["emodb", "iemocap", "ravdess", "savee"]:
     raise ValueError(
         "Incorrect dataset provided, options are: emodb, iemocap, ravdess, savee"
@@ -47,7 +47,7 @@ if which_dataset not in ["emodb", "iemocap", "ravdess", "savee"]:
 
 print("Dataset selected:", which_dataset)
 
-# AlertingALERTING USER OF SAMPLE RATE ARGUMENT EXCEEDING NATIVE SAMPLE RATE
+# Alerting user of sampel rate argument exceeding sample rate of source
 
 if which_dataset == "ravdess":
      if SAMPLE_RATE > 48000:
