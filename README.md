@@ -92,4 +92,4 @@ but this normalised per batch and after samples have been preprocessed
 You may find it worth experimenting with using neither, or one or both of the
 normalisation steps depending on other factors. 
 
-Example: python dataset_preprocess.py emodb 16000 4 y
+Example: python dataset_preprocess.py emodb 16000 4 y PREPROCESSED_DATA_FOLDERNAME
