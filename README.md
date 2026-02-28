@@ -77,19 +77,12 @@ If you wish to modify a datasets before preprocessing, you must iterate over the
 
 
 ```
-First argument: The name of the dataset in lower case. Options are: emodb iemocap ravdess saveee
+# Command-line arguments:
+#   which_dataset      : which dataset to process (incl. emodb, savee, iemocap, ravdess)
+#   sample_rate       : sampling rate in Hz
+#   sample_duration   : duration of each sample in seconds
+#   z_score           : whether to z-score normalize at this preprocessing stage ('y' or 'n')
+#   --suffix (optional): suffix for output folder name to avoid overwriting previous runs
+# ex.  python dataset_preprocess.py emodb 16000 4 y 
+# or ex. python dataset_preprocess.py savee 16000 3 n --suffix new_output_directory_name  
 
-Second argument: The sample rate. This must be entered as 16000 and not 16k
-
-Third argument: An integer denoting duration in seconds to trim or pad each sample to.
-All samples must be the same duration to be used as training data by tensorflow.
-
-Fourth argument: The Z_score normalisation flag. y or n
-This applies z-score normalisation int he preprocessing stage.
-There is a normalisation layer in the model architecture,
-but this normalised per batch and after samples have been preprocessed
-
-You may find it worth experimenting with using neither, or one or both of the
-normalisation steps depending on other factors. 
-
-Example: python dataset_preprocess.py emodb 16000 4 y PREPROCESSED_DATA_FOLDERNAME
