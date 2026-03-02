@@ -11,7 +11,7 @@ Most of the time was spent experimenting with data preprocessing optimisations, 
 
 Four of the main datasets for SER were used, EmoDB, IEMOCAP, SAVEE, and RAVDESS, and the work adopted a speaker-independent approach whereby the entirety of at least one speaker's speech samples were excluded from training and used exclusively for testing, in this way there is no bleeding of speaker-specific qualities into the training data. This approach consistently proves to be more challenging for ML models, and it is thought that this improves model generalisability.
 
-My results support the view that Deep Learning techniques achieve superior results on speaker independent speech emotion recognition, than traditional ML approaches which leverage domain knowledge via handcrafted audio features.
+My results support the view that deep learning techniques achieve superior performance on speaker-independent speech emotion recognition compared to traditional ML approaches that rely on domain knowledge via handcrafted audio features.
 
 I concluded my project by creating an ensemble model which averaged the softmax probabilities per class from the three separate CNN models trained on different data representations. With exception to one dataset (IEMOCAP) this improved classification accuracy. 
 
