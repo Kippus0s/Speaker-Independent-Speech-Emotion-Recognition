@@ -5,4 +5,5 @@ soundfile 0.13.1
 tensorflow 2.19.0
 scikit-learn 1.7.0
 sklearn-preprocessing 0.1.0
-audiomentations 0.41.0
+audiomentations-0.43.1
+
