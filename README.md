@@ -4,8 +4,12 @@ For the final project of my Bachelor's of Science in Computing & IT, I worked on
 This project is an updated and refactored version, as the original spanned dozens of scripts which were unique to each of the four Speech Emotion Recongition (SER) datasets I utilised.  In addition, this project will verify my results, confirming reproducibility. 
 
 # Project Summary 
+The project compared a tradiional ML approach on SER with that of the modern Deep Learning (DL) approach. The study was speaker-independent, meaning that the model's training data was segmented by speaker, in this way the model was not exposed to anaudio samples from the same speaker across splits. This is due to speaker-specific qualities "leaking" into the learning process in speaker-dependent studies, where training data includes samples from all speakers in the total dataset. An SER model can not be considered to be truly generalisable if it is speaker-dependent. 
 
-The project tested a traditional ML approach, whereby handcrafted features extracted from OpenSMILE were used to train a logistic regression classifier. This was followed by a Deep Learning (DL) approach which utilised Convolutional Neural Networks (CNN) trained on three data representations separately, the raw waveforms, Mel Spectrograms, and MFCCS.
+The traditional ML approach is that of utilising handcrafted features, in this case I used the emobase feature set extracted  with OpenSMILE, which were used to train a logistic regression classifier. 
+The DL approach followed, which utilised Convolutional Neural Networks (CNN) trained on three data representations separately, the raw waveforms (WAV), Mel Spectrograms, and Mel Frequency Cepstrum Coefficients (MFFCs).
+Ultimately I created a simple aggregation-based ensemble (post-fusion model) for each dataset which aggregated the predicted class probabilities from the models trained on each of the three different data representations. 
+
 Results were compared across the four datasets, between the CNN models and the different data representations, and between the CNN models and traditional ML classifier.
 Most of the time was spent experimenting with data preprocessing optimisations, and neural network architecture optimisations for the CNNs, and after multiple iterations the DL approach outperformed the traditional ML approach despite it's leveraging of heuristic features. 
 
@@ -15,20 +19,27 @@ My results support the view that deep learning techniques achieve superior perfo
 
 I concluded my project by creating an ensemble model which averaged the softmax probabilities per class from the three separate CNN models trained on different data representations. With exception to one dataset (IEMOCAP) this improved classification accuracy. 
 
-### Ensemble model accuracies  
+# Traditional ML model accuracy (logistic Regression model trained on openSMILE's emobase feature set)
 
-```
+EmoDB: 77.6%
+RAVDESS 55.8%
+SAVEE 51.6%
+IEMOCAP: 28% 
+
+# Ensemble model accuracy  
+
 EmoDB: 91%
 RAVDESS: 64%
 SAVEE: 65%
-IEMOCAP: 44% (The best performing non-ensemble model for IEMOCAP was trained on MFCCs and achieved 48.67%)
-```
+IEMOCAP: 44% (This ensemble failed to improve the performance, in fact the best performing individual model trained on IEMOCAP was the MFCC model which achieved 48.67%)
 
-### Comparison with other contemporary research
+
+# Comparison with other contemporary research
 
 I compared my results with other Speaker Independent (SI) studies. The EmoDB ensemble performs among the top performing speaker independent models, despite using a relatively simple and lightweight approach. I found only one work which outperformed my EmoDB ensemble, Amjad et al. 2021 achieved 92.65% WAR, compared to my model's 91% WAR. Xu et al. 2022 also reported 90.61% Accuracy and Farooq et al. 2020 reported 90.5%. 
 
-The other ensembles did not perform so well, for RAVDESS Amjad et al. 2021 (82.75% WAR), Sayed et al. 2025 (73.75% Acc), and Farooq et al. 2020 (73.5% WAR) show demonstrably better accuracy, at around 10-20% higher than my own. However, SI studies on RAVDESS were extremely rare, and two of these models used AlexNet pre-trained network, and Sayed used a CNN+LSTM hybrid model which is somewhat more expensive to train. 
+The other ensembles did not perform as well relative to modern research, for RAVDESS the top contemporaries include Amjad et al. 2021 (82.75% WAR), Sayed et al. 2025 (73.75% Acc), and Farooq et al. 2020 (73.5% WAR). All show demonstrably higher accuracy, at around 10-20% higher than my own. 
+However, SI studies on RAVDESS were extremely rare, and two of these models used AlexNet pre-trained network, and Sayed used a CNN+LSTM hybrid model which is somewhat more expensive to train. 
 
 My SAVEE ensemble was outperformed by Amjad et al. 2021 (75.38% WAR) and Farooq et al. 2020 (66.90% WAR). This dataset was even rarer as a choice of SI study than RAVDESS. 
 
