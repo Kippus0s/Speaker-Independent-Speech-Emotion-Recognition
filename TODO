@@ -1,5 +1,5 @@
 Readme: Needs improving in writing and some further information.
 # DL models:  Complete refactoring of the the best performing models, ensemble and upload. 
 
-Opensmile models:  Refactor as necessary. upload csvs.
+Logistic regression classifiers:  Refactor as necessary. upload csvs.
 
