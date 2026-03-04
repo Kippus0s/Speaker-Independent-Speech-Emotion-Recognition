@@ -21,17 +21,21 @@ I concluded my project by creating an ensemble model which averaged the softmax 
 
 # Traditional ML model accuracy (logistic Regression model trained on openSMILE's emobase feature set)
 
-EmoDB: 77.6%
+```
+emoDB: 77.6%
 RAVDESS 55.8%
 SAVEE 51.6%
-IEMOCAP: 28% 
+IEMOCAP: 28%
+```
 
 # Ensemble model accuracy  
 
+```
 EmoDB: 91%
 RAVDESS: 64%
 SAVEE: 65%
 IEMOCAP: 44% (This ensemble failed to improve the performance, in fact the best performing individual model trained on IEMOCAP was the MFCC model which achieved 48.67%)
+```
 
 
 # Comparison with other contemporary research
