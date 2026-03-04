@@ -34,7 +34,7 @@ IEMOCAP: 28%
 EmoDB: 91%
 RAVDESS: 64%
 SAVEE: 65%
-IEMOCAP: 44% (This ensemble failed to improve the performance, in fact the best performing individual model trained on IEMOCAP was the MFCC model which achieved 48.67%)
+IEMOCAP: 44% (This ensemble failed to improve performance, the best performing overall model trained on IEMOCAP was the MFCC model which achieved 48.67%)
 ```
 
 
