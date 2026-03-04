@@ -241,16 +241,6 @@ def create_datasets(df_train, df_val, df_test, DATASET, DATATYPE, SAMPLE_RATE, S
     test_ds  = create_tf_dataset(df_test, DATASET, DATATYPE, DATASET_PATH, BATCH_SIZE, INPUT_SHAPE, shuffle=False)
     return train_ds, val_ds, test_ds
 
-
-#def train_model(dataset, DATATYPE, z_score_pre_arg):
-#    dataset_path = DATASET_PATH
-#    process_file 
-    
-#    print("works so far")
-#train_model(dataset, DATATYPE, z_score_pre_arg)
-
-
-
 def main():
 
     #Creating the tensorflow dataset objects
@@ -278,13 +268,16 @@ def main():
     
     
     
-    #Testing the datasets are made properly. 
+    #Testing the dataset objects are created properly. 
     for audio, label in train_ds.unbatch().take(1):
         print("Audio shape:", audio.shape)
         print("Label:", label.numpy())
         print("Audio snippet:", audio[:10].numpy())
 
+    #train_model_script(model_x) # 
+
 
 if __name__ == "__main__":
     main()
+
      
