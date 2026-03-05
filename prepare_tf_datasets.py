@@ -132,7 +132,6 @@ def process_file(file, DATASET, DATATYPE, DATASET_PATH, INPUT_SHAPE):
         return data, label
 
 def create_tf_dataset(df, DATASET, DATATYPE, DATASET_PATH, BATCH_SIZE, INPUT_SHAPE, shuffle=True):
-    bs = BATCH_SIZE
     ds = tf.data.Dataset.from_generator(
     lambda: iter(process_file(file,DATASET, DATATYPE, DATASET_PATH, INPUT_SHAPE) for _, file in df.iterrows()),
     output_signature=(
@@ -140,15 +139,15 @@ def create_tf_dataset(df, DATASET, DATATYPE, DATASET_PATH, BATCH_SIZE, INPUT_SHA
         tf.TensorSpec(shape=(), dtype=tf.int32)          # label
     ))
    
-    
+    ds = ds.cache() 
     if shuffle:
         ds = ds.shuffle(buffer_size=len(df),seed=seed)
-    ds = ds.batch(bs)
-    ds = ds.cache() #this will cache just batches not entire dataset
+    ds = ds.batch(BATCH_SIZE)
     ds = ds.prefetch(tf.data.AUTOTUNE)
     return ds
 
 def create_tf_dataset_aug(df, DATASET, DATASET_PATH, INPUT_SHAPE, BATCH_SIZE, shuffle=True):  
+    
     ds = tf.data.Dataset.from_generator(
     lambda: iter(process_file_aug(file, DATASET, DATASET_PATH, INPUT_SHAPE) for _, file in df.iterrows()),
     output_signature=(
@@ -156,11 +155,10 @@ def create_tf_dataset_aug(df, DATASET, DATASET_PATH, INPUT_SHAPE, BATCH_SIZE, sh
         tf.TensorSpec(shape=(), dtype=tf.int32)          # label
     ))
     
-    
+    ds = ds.cache() 
     if shuffle:
         ds = ds.shuffle(buffer_size=len(df),seed=seed)
     ds = ds.batch(BATCH_SIZE)
-    ds = ds.cache()
     ds = ds.prefetch(tf.data.AUTOTUNE)
     return ds
 
