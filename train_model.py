@@ -61,3 +61,6 @@ def parse_args():
 
 args = parse_args()
 train_ds, val_ds, test_ds = create_tf_datasets(args.DATASET, args.DATATYPE, args.SAMPLE_RATE, args.SAMPLE_DURATION, args.BATCH_SIZE, args.PREPROCESSED_ROOT_DIR)
+# model = build_model(args.new_arg_for_modelname)
+# trained_model =  train_model(model)
+# evaluate_model = model.evaluate() 
