@@ -91,30 +91,34 @@ augment = Compose([
     PitchShift(min_semitones=-4, max_semitones=4, p=0.5)])
 
 def load_augment(path):
-    data, samplerate = sf.read(path) # returns tf tensor array    
-    augmented_data = augment(samples=data,sample_rate=samplerate)    
-    return tf.convert_to_tensor(augmented_data, dtype=tf.float32) # this is one file , i can pass this instead
+    data, samplerate = sf.read(path, dtype='float32') # returns tf tensor array    
+    print("len of original file" , len(data))
+    print("loaded data and samplerate from sf file")
+    augmented_data = augment(samples=data,sample_rate=samplerate)   
+    print("augmented data complete")
+    print("len of augmented file" , len(augmented_data))
+    return tf.convert_to_tensor(augmented_data) # this is one file , i can pass this instead
 
 def load_wav(path):    
     data, samplerate = sf.read(path) # returns tf tensor array    
     print(path)
-    return tf.convert_to_tensor(data, dtype=tf.float32) 
+    return tf.convert_to_tensor(data) 
 
 
 # A modified process_file function which implements audio augmentations replace this with condition check for process file
 def process_file_aug(file, DATASET, DATASET_PATH, INPUT_SHAPE):
-    path = os.path.join(DATASET_PATH, file['file'])
+    print("processing augmentation file")
+    path = os.path.join(DATASET_PATH, os.path.normpath(file['file']))
     audio_tensor = load_augment(path)
     audio_tensor = tf.reshape(audio_tensor, INPUT_SHAPE)
     label = LABEL_MAP[DATASET][file['emotion']]
     return audio_tensor, label
 
 def process_file(file, DATASET, DATATYPE, DATASET_PATH, INPUT_SHAPE):
-        
+        print("processing file")
         if DATATYPE == 'mfcc' or DATATYPE == 'mel':
             path = os.path.join(DATASET_PATH,os.path.normpath(file['file'][:-4]+".npy"))
             data = np.load(path)
-            #data_shape = data.shape
             data = tf.reshape(data, INPUT_SHAPE)
         
         else: 
@@ -129,50 +133,54 @@ def process_file(file, DATASET, DATATYPE, DATASET_PATH, INPUT_SHAPE):
 
 def create_tf_dataset(df, DATASET, DATATYPE, DATASET_PATH, BATCH_SIZE, INPUT_SHAPE, shuffle=True):
     bs = BATCH_SIZE
-    audio_label_pairs = [process_file(file, DATASET, DATATYPE, DATASET_PATH, INPUT_SHAPE) for _, file in df.iterrows()]# file 
     ds = tf.data.Dataset.from_generator(
-    lambda: iter(audio_label_pairs),
+    lambda: iter(process_file(file,DATASET, DATATYPE, DATASET_PATH, INPUT_SHAPE) for _, file in df.iterrows()),
     output_signature=(
         tf.TensorSpec(shape= INPUT_SHAPE, dtype=tf.float32),  # audio 
         tf.TensorSpec(shape=(), dtype=tf.int32)          # label
     ))
    
-    ds = ds.cache()
+    
     if shuffle:
         ds = ds.shuffle(buffer_size=len(df),seed=seed)
     ds = ds.batch(bs)
+    ds = ds.cache() #this will cache just batches not entire dataset
     ds = ds.prefetch(tf.data.AUTOTUNE)
     return ds
 
-def create_tf_dataset_aug(df, DATASET, DATASET_PATH, INPUT_SHAPE, BATCH_SIZE, shuffle=True):
-    bs = BATCH_SIZE
-    audio_label_pairs = [process_file_aug(file, DATASET, DATASET_PATH, INPUT_SHAPE) for _, file in df.iterrows()]# file 
+def create_tf_dataset_aug(df, DATASET, DATASET_PATH, INPUT_SHAPE, BATCH_SIZE, shuffle=True):  
     ds = tf.data.Dataset.from_generator(
-    lambda: iter(audio_label_pairs),
+    lambda: iter(process_file_aug(file, DATASET, DATASET_PATH, INPUT_SHAPE) for _, file in df.iterrows()),
     output_signature=(
         tf.TensorSpec(shape=(INPUT_SHAPE), dtype=tf.float32),  # audio
         tf.TensorSpec(shape=(), dtype=tf.int32)          # label
     ))
-    #ds = ds.map(tf_load_wav, num_parallel_calls=tf.data.AUTOTUNE) #further preprocessing 
-    ds = ds.cache()
+    
+    
     if shuffle:
         ds = ds.shuffle(buffer_size=len(df),seed=seed)
     ds = ds.batch(BATCH_SIZE)
+    ds = ds.cache()
     ds = ds.prefetch(tf.data.AUTOTUNE)
     return ds
 
 # Create the datasets using tf dataset function
-
 def create_datasets(df_train, df_val, df_test, DATASET, DATATYPE, SAMPLE_RATE, SAMPLE_DURATION, BATCH_SIZE, DATASET_PATH, INPUT_SHAPE):
-    train_ds = create_tf_dataset(df_train, DATASET, DATATYPE, DATASET_PATH, BATCH_SIZE, INPUT_SHAPE)
-    if DATATYPE == "wav":
-        train_ds_aug = create_tf_dataset_aug(df_train, DATASET, DATASET_PATH, INPUT_SHAPE, BATCH_SIZE)
-        train_ds = train_ds.concatenate(train_ds_aug)
-    val_ds   = create_tf_dataset(df_val, DATASET, DATATYPE, DATASET_PATH, BATCH_SIZE, INPUT_SHAPE, shuffle=False)
-    test_ds  = create_tf_dataset(df_test, DATASET, DATATYPE, DATASET_PATH, BATCH_SIZE, INPUT_SHAPE, shuffle=False)
-    return train_ds, val_ds, test_ds
+        if DATATYPE == "wav":
+            train_ds_aug = create_tf_dataset_aug(df_train, DATASET, DATASET_PATH, INPUT_SHAPE, BATCH_SIZE, shuffle=True)
+            train_ds = create_tf_dataset(df_train, DATASET, DATATYPE, DATASET_PATH, BATCH_SIZE, INPUT_SHAPE,shuffle=True)
+            train_ds = train_ds.concatenate(train_ds_aug)
+        else:
+            train_ds = create_tf_dataset(df_train, DATASET, DATATYPE, DATASET_PATH, BATCH_SIZE, INPUT_SHAPE)
+        
+        val_ds = create_tf_dataset(df_val, DATASET, DATATYPE, DATASET_PATH, BATCH_SIZE, INPUT_SHAPE, shuffle=False)
+        test_ds = create_tf_dataset(df_test, DATASET, DATATYPE, DATASET_PATH, BATCH_SIZE, INPUT_SHAPE, shuffle=False)
+        
+        return train_ds, val_ds, test_ds
 
+#Using utility functiosn from prepare_tf_datasets, we now create the tf dataset objects for training, validation and testing.
 def create_tf_datasets(DATASET, DATATYPE, SAMPLE_RATE, SAMPLE_DURATION, BATCH_SIZE, PREPROCESSED_ROOT_DIR):
+    print("DATATYPE =", DATATYPE)
 
     #Creating the tensorflow dataset objects
     root_path = os.path.join(os.getcwd(), DATASET_MAP[DATASET.lower()])
@@ -182,17 +190,12 @@ def create_tf_datasets(DATASET, DATATYPE, SAMPLE_RATE, SAMPLE_DURATION, BATCH_SI
 
     DATASET_PATH = get_dataset_path(DATATYPE, PREPROCESSED_ROOT_DIR, DATASET)
     INPUT_SHAPE = get_input_shape(DATATYPE, DATASET_PATH, df_train, SAMPLE_RATE, SAMPLE_DURATION)
-       
+    
 
     train_ds, val_ds, test_ds =  create_datasets(df_train, df_val, df_test, DATASET, DATATYPE, SAMPLE_RATE, SAMPLE_DURATION, BATCH_SIZE, DATASET_PATH, INPUT_SHAPE)
-       
+        
     
-    #Testing the dataset objects are created properly. 
-    for audio, label in train_ds.unbatch().take(1):
-        print("Audio shape:", audio.shape)
-        print("Label:", label.numpy())
-        print("Audio snippet:", audio[:10].numpy())
-
-    return train_ds, val_ds, test_ds    
+    
+    return train_ds, val_ds, test_ds, INPUT_SHAPE 
 
 
