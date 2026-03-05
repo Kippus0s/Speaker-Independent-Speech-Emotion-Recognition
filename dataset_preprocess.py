@@ -12,7 +12,7 @@ import librosa.display
 import soundfile as sf
 import argparse 
 
-# Training/validation/test split constants
+# Validation split constants
 """ These are the speakers I used for my study, but experiementation with different splits, or cross-validation is welcome
 Rather than perform cross-validation, I performed a simple single-pass speaker-independent validation
 Cross-validation would be preferable, but it is far more time-consuming to complete, as the models went through many iterations"""
@@ -39,9 +39,9 @@ which_dataset      : which dataset to process (incl. emodb, savee, iemocap, ravd
 sample_rate       : sampling rate in Hz
 sample_duration   : duration of each sample in seconds
 z_score           : whether to z-score normalize at this preprocessing stage ('y' or 'n')
---suffix (optional): suffix for output folder name to avoid overwriting previous runs
+--output (optional): name for output directory name to avoid overwriting previous runs
 ex.  python dataset_preprocess.py emodb 16000 4 y 
-or ex. python dataset_preprocess.py savee 16000 3 n --suffix new_output_directory_name """
+or ex. python dataset_preprocess.py savee 16000 3 n --output new_output_directory_name """
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -75,10 +75,10 @@ def parse_args():
     )
 
     parser.add_argument(
-    "--suffix",
+    "--output",
     type=str,
     default=None,
-    help="Optional suffix for output folder to avoid overwriting previous preprocessing runs"
+    help="Optional name for output folder to avoid overwriting previous preprocessing runs"
     )    
 
     return parser.parse_args()
@@ -99,25 +99,25 @@ def get_dataset_paths(which_dataset):
         dataset_name = "EmoDB"
         data_path = os.path.join(cwd, dataset_name)
         DATASET_PATH = dataset_name
-        csv_path = os.path.join(cwd, "emodb.csv")
+        csv_path = os.path.join(cwd, "csv", "emodb.csv")
         
     elif which_dataset == "iemocap":
         dataset_name = "IEMOCAP"
         data_path = os.path.join(cwd, dataset_name)
         DATASET_PATH = os.path.normpath(cwd+"\IEMOCAP_full_release_withoutVideos\IEMOCAP_full_release")
-        csv_path = os.path.join(cwd, "iemocap.csv")
+        csv_path = os.path.join(cwd, "csv", "iemocap.csv")
         
     elif which_dataset == "ravdess":
         dataset_name = "RAVDESS"
         data_path = os.path.join(cwd, dataset_name)
         DATASET_PATH = data_path
-        csv_path = os.path.join(cwd, "ravdess.csv")
+        csv_path = os.path.join(cwd, "csv", "ravdess.csv")
         
     elif which_dataset == "savee":
         dataset_name = "SAVEE"
         data_path = os.path.join(cwd, dataset_name)
         DATASET_PATH = os.path.join(dataset_name, "AudioData")
-        csv_path = os.path.join(cwd, "savee.csv")
+        csv_path = os.path.join(cwd, "csv", "savee.csv")
         
     else:
         raise ValueError("Incorrect dataset provided, options are: emodb, iemocap, ravdess, savee")
@@ -209,16 +209,14 @@ def data_split(which_dataset, df, data_path):
 
   
 # Audio sample duration andsample rate adjustment, and optional z-score normalisation.
-def norm_script(which_dataset, z_score, DATASET_PATH, data_path, dataset_name, SAMPLE_RATE, SAMPLE_DURATION, csv_path, out_path, suffix, df):     
+def norm_script(which_dataset, z_score, DATASET_PATH, data_path, dataset_name, SAMPLE_RATE, SAMPLE_DURATION, csv_path, out_path, output_arg, df):     
 
      # Z-score normalisation          
      """
      First compute the mean and std from the training data in order to fit
      # We compute from the training data to prevent data leakage and preserve the integrity of speaker independence
-     # Note this is not ideal, as we are loading the entire training dataset into memory at once, but it is simpler 
-     to implement and the datasets are small enough that it should not cause memory issues. 
-     # An alternative  implementation would compute the mean and std in a streaming fashion without loading everything
-     at once, although this step would take longer to run in that case. """
+     # Note this is not ideal, as we are loading the entire training dataset into memory at once, but it is simpler to implement and the datasets are small enough that it should not cause memory issues. 
+     # An alternative  implementation would compute the mean and std in a streaming fashion without loading everything at once, although this step would take longer to run in that case. """
      
      dataset_path = os.path.join(os.getcwd(), data_path)
      globalaudio = np.concatenate(listwavs(pd.read_csv(os.path.join(dataset_path,"train.csv")), SAMPLE_RATE, dataset_name, DATASET_PATH, data_path))
@@ -251,15 +249,15 @@ def norm_script(which_dataset, z_score, DATASET_PATH, data_path, dataset_name, S
                save_output(padded_wave,filepath, out_path, SAMPLE_RATE)             
      
           # Writing out          
-          df.loc[index, str(suffix)] = os.path.join(out_path, str(filepath))        
+          df.loc[index, str(output_arg)] = os.path.join(out_path, str(filepath))        
           print(os.path.join(out_path, str(filepath)))   
-          df.to_csv(which_dataset + suffix + "_preprocessed.csv")
+          df.to_csv(which_dataset + output_arg + "_preprocessed.csv")
 
      print("Progress: Z-score normalisation and fixing of sample duration completed")
 
 
 # Deriving Mel Spectrograms and MFCCs from the normalised and duration-adjusted samples, and writing the paths to these new features to a CSV file     
-def mel_mfcc(out_path, which_dataset, SAMPLE_RATE, df, suffix):
+def mel_mfcc(out_path, which_dataset, SAMPLE_RATE, df, output_arg):
      #Creating Mel and MFCCs. 
      
      # Creating the mel and mfcc directories in the output folder if they do not already exist.
@@ -270,9 +268,9 @@ def mel_mfcc(out_path, which_dataset, SAMPLE_RATE, df, suffix):
      if not os.path.exists(mfcc_path):
           os.makedirs(mfcc_path)
      
-     csv_path2 = os.path.join(which_dataset + suffix + "_preprocessed.csv")
+     csv_path2 = os.path.join(which_dataset + output_arg + "_preprocessed.csv")
             
-     file_column = suffix       
+     file_column = output_arg       
      
      # Take the trimmed/padded sound files 
      for filepath in pd.read_csv(csv_path2)[file_column].values:
@@ -332,7 +330,7 @@ def mel_mfcc(out_path, which_dataset, SAMPLE_RATE, df, suffix):
           df.loc[index, 'mel_spectrogram'] = os.path.join(mel_path,str(filepath)[4:-4]+".npy")
           df.loc[index, 'MFCCs'] = os.path.join(mfcc_path, str(filepath)[4:-4]+".npy")
 
-     df.to_csv(which_dataset + suffix + "_preprocessed_with_mel_mfcc.csv")
+     df.to_csv(which_dataset + output_arg + "_preprocessed_with_mel_mfcc.csv")
 
 
 
@@ -372,25 +370,24 @@ def main():
     # Get dataset paths
     dataset_name, data_path, DATASET_PATH, csv_path = get_dataset_paths(which_dataset)
 
-    # Override if user supplied optional suffix argument
-    suffix = (
-        args.suffix
-        if args.suffix is not None       
+    # Override if user supplied optional output directory argument
+    output_dir = (
+        args.output
+        if args.output is not None       
     else ('norm_and_fixedduration' if z_score == 'y' else 'fixedduration')
     )
-    out_path = os.path.normpath(os.path.join(dataset_name, suffix))
+    out_path = os.path.normpath(os.path.join(dataset_name, output_dir))
 
     os.makedirs(out_path, exist_ok=True)
 
     df = pd.read_csv(csv_path)
+    output_arg = output_dir
 
     # Run the main preprocessing functions in order
     data_split(which_dataset, df, data_path)
-    norm_script(which_dataset, z_score, DATASET_PATH, data_path, dataset_name, SAMPLE_RATE, SAMPLE_DURATION, csv_path, out_path, suffix, df)
-    mel_mfcc(out_path, which_dataset, SAMPLE_RATE, df, suffix)
+    norm_script(which_dataset, z_score, DATASET_PATH, data_path, dataset_name, SAMPLE_RATE, SAMPLE_DURATION, csv_path, out_path, output_arg, df)
+    mel_mfcc(out_path, which_dataset, SAMPLE_RATE, df, output_arg)
 
 if __name__ == "__main__":
     main()
      
-
-
