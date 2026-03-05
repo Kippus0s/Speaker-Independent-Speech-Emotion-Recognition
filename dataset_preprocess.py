@@ -215,8 +215,10 @@ def norm_script(which_dataset, z_score, DATASET_PATH, data_path, dataset_name, S
      """
      First compute the mean and std from the training data in order to fit
      # We compute from the training data to prevent data leakage and preserve the integrity of speaker independence
-     # Note this is not ideal, as we are loading the entire training dataset into memory at once, but it is simpler to implement and the datasets are small enough that it should not cause memory issues. 
-     # An alternative  implementation would compute the mean and std in a streaming fashion without loading everything at once, although this step would take longer to run in that case. """
+     # Note this is not ideal, as we are loading the entire training dataset into memory at once, but it is simpler 
+     to implement and the datasets are small enough that it should not cause memory issues. 
+     # An alternative  implementation would compute the mean and std in a streaming fashion without loading everything
+     at once, although this step would take longer to run in that case. """
      
      dataset_path = os.path.join(os.getcwd(), data_path)
      globalaudio = np.concatenate(listwavs(pd.read_csv(os.path.join(dataset_path,"train.csv")), SAMPLE_RATE, dataset_name, DATASET_PATH, data_path))
@@ -390,3 +392,4 @@ def main():
 if __name__ == "__main__":
     main()
      
+
