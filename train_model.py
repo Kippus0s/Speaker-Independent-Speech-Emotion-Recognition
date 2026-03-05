@@ -1,4 +1,4 @@
-#otherway_test
+# train_model.py 
 import os
 import pandas as pd
 import numpy as np
@@ -15,7 +15,7 @@ from tensorflow.keras.regularizers import l2, l1, l1_l2
 from tensorflow.keras.callbacks import EarlyStopping, Callback
 
 from prepare_tf_datasets import *
-from models import model_spec
+from models import model_specs
 
 # Argument handling
 def parse_args():
@@ -94,7 +94,7 @@ def main(args):
 
 
     # turn the string into a callable
-    model_name = getattr(model_spec, model_name)
+    model_name = getattr(model_specs, model_name)
     model, opt = model_name(INPUT_SHAPE, train_ds) 
     model.compile(optimizer = opt,loss='sparse_categorical_crossentropy',
                 metrics=['accuracy']) 
@@ -102,8 +102,4 @@ def main(args):
 
 if __name__ == "__main__":
     main(args)
-
-
-# trained_model =  train_model(model)
-# evaluate_model = model.evaluate() 
 
