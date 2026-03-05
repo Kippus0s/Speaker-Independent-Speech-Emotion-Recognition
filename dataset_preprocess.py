@@ -12,7 +12,7 @@ import librosa.display
 import soundfile as sf
 import argparse 
 
-# Validation split constants
+# Training/validation/test split constants
 """ These are the speakers I used for my study, but experiementation with different splits, or cross-validation is welcome
 Rather than perform cross-validation, I performed a simple single-pass speaker-independent validation
 Cross-validation would be preferable, but it is far more time-consuming to complete, as the models went through many iterations"""
@@ -392,4 +392,5 @@ def main():
 if __name__ == "__main__":
     main()
      
+
 
