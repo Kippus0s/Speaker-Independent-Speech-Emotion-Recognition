@@ -4,3 +4,4 @@
 Logistic regression classifiers:  Refactor as necessary. upload csvs.
 
 Readme: More information to provide for any readers, show charts, etc
+I need also retest all models and ensembles because there are small differences in the dataset due to preprocessing intracies relating to floating point accuracy.
