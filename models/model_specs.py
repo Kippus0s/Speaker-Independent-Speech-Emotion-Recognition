@@ -26,7 +26,6 @@ def emodb_wav (INPUT_SHAPE, train_ds):
     x = BatchNormalization()(x)
     x = MaxPooling1D(pool_size=3)(x)
     x = Conv1D(128, kernel_size=3, activation='relu', padding='same')(x)
-    #No batch norm here
     x = MaxPooling1D(pool_size=3)(x)
     x = Conv1D(160, kernel_size=3, activation='relu', padding='same')(x)
     x = BatchNormalization()(x)
