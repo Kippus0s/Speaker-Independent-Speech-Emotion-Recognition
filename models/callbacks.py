@@ -32,14 +32,14 @@ class Earlystop_3(EarlyStopping):
                                restore_best_weights=True)        
         
 
-class Earlystop_4(EarlyStopping)
+class Earlystop_4(EarlyStopping):
     def __init__(self):
         super().__init__(monitor='val_accuracy',  
                         patience=5,           
                         restore_best_weights=True,
                         )        
         
-class Earlystop_5(EarlyStopping)
+class Earlystop_5(EarlyStopping):
     def __init__(self):
         super().__init__(monitor='val_accuracy',  
                         patience=6,  start_from_epoch = 15,             
