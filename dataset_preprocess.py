@@ -129,6 +129,7 @@ def listwavs(dataframe, SAMPLE_RATE, dataset_name, dataset_path, data_path):
      list_wavs = []
      for file in dataframe['file']:
           audio_file_path = audio_file_parser(file, dataset_name, dataset_path)
+          print("audio_file_path = ", audio_file_path)
           x, _ = lr.load(audio_file_path, sr=SAMPLE_RATE)
           list_wavs.append(x)
      return list_wavs
@@ -138,12 +139,12 @@ def audio_file_parser(file, dataset_name, dataset_path):
                audio_file_path = os.path.join(dataset_path, os.path.normpath(file)) 
           elif dataset_name == "SAVEE":
                audio_file_path = os.path.join(dataset_path, os.path.normpath(file) + ".wav")
-               print("normpath(file) gives ", os.path.normpath(file))
+               #print("normpath(file) gives ", os.path.normpath(file))
           elif dataset_name == "RAVDESS":
                audio_file_path = os.path.join(dataset_path, file[0:8], file[9:])              
           else: #IEMOCAP
                audio_file_path = os.path.join(dataset_path, os.path.normpath(file)) #NOT WORKING YET
-          print("audio file path: ", audio_file_path)
+          #print("audio file path: ", audio_file_path)
           return audio_file_path
 
 def trim_wave(wave, SAMPLE_DURATION, SAMPLE_RATE):
@@ -254,7 +255,9 @@ def norm_script(which_dataset, z_score, DATASET_PATH, data_path, dataset_name, S
           df.to_csv(which_dataset + output_arg + "_preprocessed.csv")
 
      print("Progress: Z-score normalisation and fixing of sample duration completed")
+     print
 
+   
 
 # Deriving Mel Spectrograms and MFCCs from the normalised and duration-adjusted samples, and writing the paths to these new features to a CSV file     
 def mel_mfcc(out_path, which_dataset, SAMPLE_RATE, df, output_arg):
@@ -383,8 +386,10 @@ def main():
     df = pd.read_csv(csv_path)
     output_arg = output_dir
 
+    
     # Run the main preprocessing functions in order
     data_split(which_dataset, df, data_path)
+    #norm_script_test(which_dataset, z_score, DATASET_PATH, data_path, dataset_name, SAMPLE_RATE, SAMPLE_DURATION, csv_path, out_path, output_arg, df)
     norm_script(which_dataset, z_score, DATASET_PATH, data_path, dataset_name, SAMPLE_RATE, SAMPLE_DURATION, csv_path, out_path, output_arg, df)
     mel_mfcc(out_path, which_dataset, SAMPLE_RATE, df, output_arg)
 
