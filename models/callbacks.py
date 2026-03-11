@@ -86,6 +86,18 @@ class Plateau_decay_3(tf.keras.callbacks.ReduceLROnPlateau):
     cooldown=0,
     min_lr=1e-6,
 )
+        
+class Plateau_decay_4(tf.keras.callbacks.ReduceLROnPlateau):
+    lr_callback = tf.keras.callbacks.ReduceLROnPlateau(monitor='val_accuracy',
+    factor=0.1,
+    patience=10,
+    verbose=0,
+    mode='auto',
+    min_delta=0.0001,
+    cooldown=0,
+    min_lr=1e-6,
+    start_from_epoch=10    
+)
 
 
 
