@@ -25,7 +25,8 @@ def emodb_wav (INPUT_SHAPE, train_ds):
     x = Conv1D(96, kernel_size=3, activation='relu', padding='same')(x)
     x = BatchNormalization()(x)
     x = MaxPooling1D(pool_size=3)(x)
-    x = Conv1D(128, kernel_size=3, activation='relu', padding='same')(x)    
+    x = Conv1D(128, kernel_size=3, activation='relu', padding='same')(x)
+    #No batch norm here
     x = MaxPooling1D(pool_size=3)(x)
     x = Conv1D(160, kernel_size=3, activation='relu', padding='same')(x)
     x = BatchNormalization()(x)
@@ -94,13 +95,13 @@ def emodb_mfcc(INPUT_SHAPE, train_ds):
     x = ReLU()(x)
     x = MaxPooling2D(pool_size=(2,2))(x)
     x = GlobalAveragePooling2D()(x)
-    x= Dropout(0.4)(x)
+    x = Dropout(0.4)(x)
     x = Flatten()(x)
     output = Dense(7, activation='softmax')(x)
     
     model = tf.keras.Model(inputs=inputs, outputs=output)
     epoch_count = 100
-    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_3(), callbacks.Plateau_decay_2()]
+    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_3(), callbacks.Plateau_decay_4()]
     return model, model_callbacks, epoch_count
 
 def ravdess_wav(INPUT_SHAPE, train_ds):
@@ -404,3 +405,4 @@ def savee_mfcc(INPUT_SHAPE, train_ds):
     model_callbacks = [callbacks.EpochTimer()]
     return model, model_callbacks, epoch_count
     
+     
