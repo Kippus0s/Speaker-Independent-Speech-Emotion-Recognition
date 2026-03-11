@@ -26,6 +26,7 @@ def emodb_wav (INPUT_SHAPE, train_ds):
     x = BatchNormalization()(x)
     x = MaxPooling1D(pool_size=3)(x)
     x = Conv1D(128, kernel_size=3, activation='relu', padding='same')(x)
+    #No batch norm here
     x = MaxPooling1D(pool_size=3)(x)
     x = Conv1D(160, kernel_size=3, activation='relu', padding='same')(x)
     x = BatchNormalization()(x)
@@ -36,7 +37,7 @@ def emodb_wav (INPUT_SHAPE, train_ds):
     x = Flatten()(x)
     output = Dense(7,activation='softmax')(x)
     model = tf.keras.Model(inputs=inputs, outputs=output)
-    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_2(), callbacks.Plataeu_decay_1()]
+    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_2(), callbacks.Plateau_decay_1()]
     epoch_count = 50
     return model, model_callbacks, epoch_count
 
@@ -68,7 +69,7 @@ def emodb_mel(INPUT_SHAPE, train_ds):
 
     model = tf.keras.Model(inputs=inputs, outputs=output)
     epoch_count = 100
-    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_2(), callbacks.Plataeu_decay_2()]
+    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_2(), callbacks.Plateau_decay_2()]
     return model, model_callbacks, epoch_count
 
 def emodb_mfcc(INPUT_SHAPE, train_ds):
@@ -100,7 +101,7 @@ def emodb_mfcc(INPUT_SHAPE, train_ds):
     
     model = tf.keras.Model(inputs=inputs, outputs=output)
     epoch_count = 100
-    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_3(), callbacks.Plataeu_decay_2()]
+    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_3(), callbacks.Plateau_decay_2()]
     return model, model_callbacks, epoch_count
 
 def ravdess_wav(INPUT_SHAPE, train_ds):
@@ -138,7 +139,7 @@ def ravdess_wav(INPUT_SHAPE, train_ds):
 
     model = tf.keras.Model(inputs=inputs, outputs=output)
     epoch_count = 50
-    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_1(), callbacks.Plataeu_decay_1()]
+    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_1(), callbacks.Plateau_decay_1()]
     return model, model_callbacks, epoch_count
 
 def ravdess_mel(INPUT_SHAPE, train_ds):
@@ -170,7 +171,7 @@ def ravdess_mel(INPUT_SHAPE, train_ds):
     output = Dense(8, activation='softmax')(x)
     model = tf.keras.Model(inputs=inputs, outputs=output)
     epoch_count = 100
-    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_2(), callbacks.Plataeu_decay_2()]
+    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_2(), callbacks.Plateau_decay_2()]
     return (model,model_callbacks,epoch_count)
 
 def ravdess_mfcc(INPUT_SHAPE, train_ds):
@@ -201,7 +202,7 @@ def ravdess_mfcc(INPUT_SHAPE, train_ds):
 
     model = tf.keras.Model(inputs=inputs, outputs=output)
     epoch_count = 100
-    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_3(), callbacks.Plataeu_decay_2()]
+    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_3(), callbacks.Plateau_decay_2()]
     return model, model_callbacks, epoch_count
 
 def iemocap_wav(INPUT_SHAPE, train_ds):
@@ -238,7 +239,7 @@ def iemocap_wav(INPUT_SHAPE, train_ds):
 
     model = tf.keras.Model(inputs=inputs, outputs=output)
     epoch_count = 50
-    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_1(), callbacks.Plataeu_decay_1()]
+    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_1(), callbacks.Plateau_decay_1()]
     return model, model_callbacks, epoch_count
 
 def iemocap_mel(INPUT_SHAPE, train_ds):
@@ -266,7 +267,7 @@ def iemocap_mel(INPUT_SHAPE, train_ds):
 
     model = tf.keras.Model(inputs=inputs, outputs=output)
     epoch_count = 100
-    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_4(), callbacks.Plataeu_decay_1()]
+    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_4(), callbacks.Plateau_decay_1()]
     return model, model_callbacks, epoch_count
 
 def iemocap_mfcc(INPUT_SHAPE, train_ds):
@@ -296,7 +297,7 @@ def iemocap_mfcc(INPUT_SHAPE, train_ds):
 
     model = tf.keras.Model(inputs=inputs, outputs=output)
     epoch_count = 100 
-    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_5(), callbacks.Plataeu_decay_1()]
+    model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_5(), callbacks.Plateau_decay_3()]
     return model, model_callbacks
 
 def savee_wav(INPUT_SHAPE, train_ds):
@@ -403,3 +404,4 @@ def savee_mfcc(INPUT_SHAPE, train_ds):
     epoch_count = 46
     model_callbacks = [callbacks.EpochTimer()]
     return model, model_callbacks, epoch_count
+    
