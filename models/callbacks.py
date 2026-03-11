@@ -15,33 +15,33 @@ class EpochTimer(Callback):
 
 class Earlystop_1(EarlyStopping):
     def __init__(self): 
-        super().__init__(monitor='val_accuracy', 
+        super().__init__(monitor='val_loss', 
                         patience=3,restore_best_weights=True)          
                                
 
 class Earlystop_2(EarlyStopping):
     def __init__(self):
-        super().__init__(monitor='val_accuracy',  
+        super().__init__(monitor='val_loss',  
                                patience=5, start_from_epoch = 20,         
                                restore_best_weights=True)        
 
 class Earlystop_3(EarlyStopping):
     def __init__(self):
-        super().__init__(monitor='val_accuracy',  
+        super().__init__(monitor='val_loss',  
                                patience=10, start_from_epoch = 10,         
                                restore_best_weights=True)        
         
 
 class Earlystop_4(EarlyStopping):
     def __init__(self):
-        super().__init__(monitor='val_accuracy',  
+        super().__init__(monitor='val_loss',  
                         patience=5,           
                         restore_best_weights=True,
                         )        
         
 class Earlystop_5(EarlyStopping):
     def __init__(self):
-        super().__init__(monitor='val_accuracy',  
+        super().__init__(monitor='val_loss',  
                         patience=6,  start_from_epoch = 15,             
                         restore_best_weights=True,
                         )        
@@ -49,10 +49,10 @@ class Earlystop_5(EarlyStopping):
                                 
 
 
-class Plataeu_decay_1(tf.keras.callbacks.ReduceLROnPlateau):
+class Plateau_decay_1(tf.keras.callbacks.ReduceLROnPlateau):
     def __init__(self):
         super().__init__(
-                        monitor='val_loss',
+                        monitor='val_accuracy',
                         factor=0.1,
                         patience=3,
                         verbose=0,
@@ -62,9 +62,9 @@ class Plataeu_decay_1(tf.keras.callbacks.ReduceLROnPlateau):
                         min_lr=1e-6
                         )
         
-class Plataeu_decay_2(tf.keras.callbacks.ReduceLROnPlateau):
+class Plateau_decay_2(tf.keras.callbacks.ReduceLROnPlateau):
     def __init__(self):
-        super().__init__(monitor='val_loss',
+        super().__init__(monitor='val_accuracy',
     factor=0.1,
     patience=10,
     verbose=0,
@@ -74,9 +74,9 @@ class Plataeu_decay_2(tf.keras.callbacks.ReduceLROnPlateau):
     min_lr=1e-6,
 )
 
-class Plataeu_decay_2(tf.keras.callbacks.ReduceLROnPlateau):
+class Plateau_decay_3(tf.keras.callbacks.ReduceLROnPlateau):
     def __init__(self):
-        super().__init__(monitor='val_loss',
+        super().__init__(monitor='val_accuracy',
     factor=0.85,
     patience=3,
     verbose=0,
