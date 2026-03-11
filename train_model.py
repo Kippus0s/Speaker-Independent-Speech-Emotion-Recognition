@@ -15,8 +15,8 @@ from tensorflow.keras.applications import *
 from tensorflow.keras.layers import *
 from tensorflow.keras.regularizers import l2, l1, l1_l2
 from tensorflow.keras.callbacks import EarlyStopping, Callback
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
-import matplotlib.pyplot as plt
+
+from evaluate import *
 from utilities.class_weight import class_weight_maker
 from prepare_tf_datasets import *
 from models import model_specs, callbacks
@@ -79,16 +79,22 @@ def parse_args():
         help="The name of the model configuration to train, in the models subdirectory"
 
     )
-  
 
+    parser.add_argument(
+        "normalise_class_weights",
+        type=str,
+        default="n",
+        choices=["y", "n"],
+        help="Normalise class weights, makes a moderate difference in most cases for better or for worse"
+    )
+  
     args = parser.parse_args()
     return args
-
-
+#Derive cmdline args
 args = parse_args()
 
 def main(args):
-
+    #Take args
     DATASET = args.DATASET
     DATATYPE = args.DATATYPE
     SAMPLE_RATE = args.SAMPLE_RATE
@@ -96,6 +102,7 @@ def main(args):
     BATCH_SIZE = args.BATCH_SIZE
     PREPROCESSED_ROOT_DIR = args.PREPROCESSED_ROOT_DIR    
     model_name = args.model_name
+    cw_flag = args.normalise_class_weights
     
 
     #Running utility functions to get the dataset path and shape of the data (duration, sample size and data representation all factors)
@@ -107,7 +114,6 @@ def main(args):
     #Creating the tensorflow dataset objects, and building the model, passing the training data to normalise
     train_ds, val_ds, test_ds, INPUT_SHAPE = create_tf_datasets(DATASET, DATATYPE, SAMPLE_RATE, SAMPLE_DURATION, BATCH_SIZE, PREPROCESSED_ROOT_DIR)
 
-
     # Data integrity check 
     for spect, label in train_ds.unbatch().take(3):
         print("Data shape:", spect.shape)
@@ -115,57 +121,33 @@ def main(args):
         print("Snippet:", spect.numpy())
     print("datasets created succesfully")
 
-    # turn the string into a callable
+    # Turn the model argument string into a callable to retrive spec from model_specs
     model_name = getattr(model_specs, model_name)
+    #Compile model
     model, model_callbacks, epoch_count = model_name(INPUT_SHAPE, train_ds) 
     opt = keras.optimizers.Adam(learning_rate=1e-4)
     model.compile(optimizer = opt,loss='sparse_categorical_crossentropy',
                 metrics=['accuracy']) 
     print("Model compiled successfully")
-    #Quick test
-    cw = class_weight_maker(train_ds)
+
+    #Train model
+    if cw_flag:
+        cw = class_weight_maker(train_ds)
+    else: cw = None 
+
     history = model.fit(train_ds, 
                  epochs=epoch_count,
                  validation_data=val_ds,callbacks=[model_callbacks], class_weight = cw)
+    
+    loss, acc = model.evaluate(test_ds, verbose=0)
+    print(f"Evaluation complete: Loss = {loss:.4f}, Accuracy = {acc:.4f}")
 
-    print("quick test complete: ",model.evaluate(test_ds))
-
-    #Saving weights and training history 
+    # Saving training weights, history, plotting confusion matrix and saving the image, 
+    # and rendering a class-by-class accuracy report
     filename = str(DATASET) + "_" + str(DATATYPE)
-    os.makedirs("weights", exist_ok=True)
-    model.save(os.path.join(os.getcwd(), "weights", filename + "_weights.keras"))
-
-    os.makedirs("training_history", exist_ok=True)
-    with open((os.path.join(os.getcwd(), "training_history", filename + "_history")), 'w') as f:
-        json.dump(history.history, f)
-
-
-
-
-    #Generate normalised confusion matrices
-    os.makedirs("confusion_matrices", exist_ok=True)
-    y_true = []
-    y_pred = []
-    for x, y in test_ds:
-        preds = model.predict(x,verbose=0)  
-        y_pred.extend(np.argmax(preds, axis=1))
-        y_true.extend(y.numpy())
-        
-    y_true = np.array(y_true)
-    y_pred = np.array(y_pred)
-    label_map = LABEL_MAP[DATASET]
-    cm = confusion_matrix(y_true, y_pred, labels= range(len(label_map)))
-
-
-
-    cmn = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-    disp = ConfusionMatrixDisplay(confusion_matrix=cmn, display_labels=label_map)
-    fig, ax = plt.subplots(figsize=(10, 8))
-    plt.title("SAVEE MFCC Optimised model 2", fontsize=16)
-    plt.xticks(fontsize=5)
-    plt.yticks(fontsize=5)
-    disp.plot(cmap="Blues",ax=ax)
-    plt.savefig((os.path.join(os.getcwd(), "confusion_matrices", filename + "_cm.png", )), dpi=300, bbox_inches='tight')
+    save_weight_history(model,history,filename)
+    plot_cm(model, filename, test_ds, DATASET, LABEL_MAP)
+    display_class_report(model,test_ds)
 
 if __name__ == "__main__":
     main(args)
