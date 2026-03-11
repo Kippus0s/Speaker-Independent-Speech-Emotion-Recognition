@@ -30,14 +30,14 @@ IEMOCAP: 28%
 
 # Ensemble-Model Accuracy  
 
-```
-EmoDB: 91%
-RAVDESS: 64%
-SAVEE: 65%
-IEMOCAP: 44% (This ensemble performed worse
-than the best performing IEMOCAP-trained model,
-which was the MFCC model scoring 48.67%)
-```
+
+| Dataset | Accuracy | Notes |
+| --- | --- | ------ |
+|EmoDB | 88% | |
+|RAVDESS | XX% | TBD, results varied from original work slightly |
+|SAVEE | XX% | TBD, results varied from original work slightly |
+|IEMOCAP | XX% | TBD, results vary from original work slightly |
+
 
 
 # Comparison with contemporary research
@@ -52,17 +52,20 @@ My SAVEE ensemble was outperformed by Amjad et al. 2021 (75.38% WAR) and Farooq 
 
 IEMOCAP appeared to the most popular dataset for SI SER, and I found the largest number of studies which outperformed my own. My approach seemed to perform relatively poorly on this dataset compared to the others. IEMOCAP is much different to the other three datasets examined, and proves to be among the most challenging of all the SER datasets. The models which outperformed my own all used increasingly more complex techniques such as leveraging pre-trained AlexNets, hybrid feature extraction and feature selection, multi-task learning, pre-trained wav2vec, and multi-head attention. The models I compared with my own that achieved greater accuracies are as follows:
 
-```
-Amjad et al. 2021 (84% WAR)
-Cai et al. 2021 (78.15% WAR)
-Farooq et al. 2020 (73.50% WAR)
-Xu et al. 2022 (73.42 % Unweighted Accuracy)
-Xu et al. 2024 (70.2% UAR)
-Chen, 2018 (64.74% UAR)
-Fayek et al. 2017 (60.89% UAR)
-Latif, 2019 (60.23% UAR)
-Vladimir Chernykh, 2018 (54% Accuracy)
-```
+EmoDB
+| Study | Data Representation | Methodology | Evaluation Result | Notes |
+|------|--------------------|-------------|------------------|------|
+| Amjad et al. 2021 | Mel Spectrogram | Pre-trained AlexNet for feature extraction, CFS for feature selection, traditional ML techniques compared with MLP for classification | 92.65% WAR | MLP classifier performed best for EmoDB |
+| Xu et al. 2022 | Mel Spectrogram, MFCC, handcrafted features | Feature vectors from three models concatenated; fourth model trained with fully connected layer | 90.61% Accuracy | |
+| Farooq et al. 2020 | Mel Spectrogram | AlexNet feature extraction, CFS feature selection, classification via MLP or traditional ML | 90.50% WAR | MLP gave best result |
+| This project | Raw waveform, Mel Spectrogram, MFCC | Ensemble of three CNN models separately trained on each representation | 92% UAR, 91% WAR, 91% Accuracy | |
+| Sayed et al. 2025 | Wavelet Scaled Spectrogram | CNN + LSTM | 87.78% Accuracy | Mean of 3 folds |
+| Human | — | — | 86% Average Unweighted Accuracy | Mean from human evaluation results (Burkhardt, 2005) |
+| Meng et al. 2019 | 3D Mel Spectrogram | 3D Dilated CNN + BiLSTM + Residual Block | 85.39% Accuracy | |
+| Zhao, Mao and Chen 2019 | Mel Spectrogram | CNN + LSTM | 82.42% Accuracy | Raw waveform only achieved 57% |
+| Xu et al. 2024 | Spectrogram | CNN for local features, GRU for global features, multi-head attention integration | 80.2% UAR | |
+| Rintala 2024 | Raw waveform | CNN + LSTM with parallel branches | 75.78% Accuracy | Based on Latif (2019) architecture |
+
 
 # Instructions
 
