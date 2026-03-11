@@ -25,8 +25,7 @@ def emodb_wav (INPUT_SHAPE, train_ds):
     x = Conv1D(96, kernel_size=3, activation='relu', padding='same')(x)
     x = BatchNormalization()(x)
     x = MaxPooling1D(pool_size=3)(x)
-    x = Conv1D(128, kernel_size=3, activation='relu', padding='same')(x)
-    #No batch norm here
+    x = Conv1D(128, kernel_size=3, activation='relu', padding='same')(x)    
     x = MaxPooling1D(pool_size=3)(x)
     x = Conv1D(160, kernel_size=3, activation='relu', padding='same')(x)
     x = BatchNormalization()(x)
@@ -298,7 +297,7 @@ def iemocap_mfcc(INPUT_SHAPE, train_ds):
     model = tf.keras.Model(inputs=inputs, outputs=output)
     epoch_count = 100 
     model_callbacks = [callbacks.EpochTimer(), callbacks.Earlystop_5(), callbacks.Plateau_decay_3()]
-    return model, model_callbacks
+    return model, model_callbacks, epoch_count
 
 def savee_wav(INPUT_SHAPE, train_ds):
     norm_layer = layers.Normalization(input_shape = INPUT_SHAPE)    
