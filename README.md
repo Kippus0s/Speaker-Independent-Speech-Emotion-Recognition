@@ -68,7 +68,7 @@ My SAVEE ensemble was outperformed by Amjad et al. 2021 (75.38% WAR) and Farooq 
 
 IEMOCAP appeared to the most popular dataset for SI SER, and I found the largest number of studies which outperformed my own. My approach seemed to perform relatively poorly on this dataset compared to the others. IEMOCAP is much different to the other three datasets examined, and proves to be among the most challenging of all the SER datasets. The models which outperformed my own all used increasingly more complex techniques such as leveraging pre-trained AlexNets, hybrid feature extraction and feature selection, multi-task learning, pre-trained wav2vec, and multi-head attention. The models I compared with my own that achieved greater accuracies are as follows:
 
-EmoDB
+## EmoDB
 | Study | Data Representation | Methodology | Evaluation Result | Notes |
 |------|--------------------|-------------|------------------|------|
 | Amjad et al. 2021 | Mel Spectrogram | Pre-trained AlexNet for feature extraction, CFS for feature selection, traditional ML techniques compared with MLP for classification | 92.65% WAR | MLP classifier performed best for EmoDB |
@@ -82,7 +82,7 @@ EmoDB
 | Xu et al. 2024 | Spectrogram | CNN for local features, GRU for global features, multi-head attention integration | 80.2% UAR | |
 | Rintala 2024 | Raw waveform | CNN + LSTM with parallel branches | 75.78% Accuracy | Based on Latif (2019) architecture |
 
-RAVDESS
+## RAVDESS
 | Study | Data Representation | Methodology | Evaluation Result | Notes |
 |------|--------------------|-------------|------------------|------|
 | Amjad et al. 2021 | Mel Spectrogram | Pre-trained AlexNet feature extraction, CFS feature selection, classification with MLP or traditional ML | 82.75% WAR | MLP performed best |
@@ -92,7 +92,7 @@ RAVDESS
 | Rintala 2024 | Raw audio | CNN + LSTM with parallel branches | 61.67% Accuracy | Based on Latif (2019) |
 | Human | — | — | 62% Accuracy | |
 
-SAVEE
+## SAVEE
 | Study | Data Representation | Methodology | Evaluation Result | Notes |
 |------|--------------------|-------------|------------------|------|
 | Amjad et al. 2021 | Mel Spectrogram | Pre-trained AlexNet feature extraction, CFS feature selection, classification via MLP | 75.38% WAR | Best result obtained with MLP |
@@ -101,7 +101,7 @@ SAVEE
 | THIS STUDY | Raw waveform, Mel Spectrogram, MFCC | Ensemble of three CNN models trained on different representations | TBD, results varied from original work slightly and need to be updated | |
 | Sivanagaraja et al. 2017 | Raw waveform | Multiple convolution branches with different downsampling scales | 50.28% Accuracy | |
 
-IEMOCAP
+## IEMOCAP
 | Study | Data Representation | Methodology | Evaluation Result | Notes |
 |------|--------------------|-------------|------------------|------|
 | Amjad et al. 2021 | Mel Spectrogram | Pre-trained AlexNet feature extraction, CFS feature selection, classification via ML algorithms | 84% WAR | SVM performed best |
@@ -130,6 +130,10 @@ Do not modify the original dataset's files or directory structure
 
 4a. >OPENSMILE MODEL PREPROCESSING AND TRAINING>
 4b. Deep Learning model preprocesssing and training To test a model, you must first preprocess the dataset by running preprocess_dataset.py in the command line with the following four arguments explained below:
+
+5. train_model py
+
+6. ensemble.py
 
 
   Command-line arguments:
