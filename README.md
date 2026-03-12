@@ -47,13 +47,14 @@ In conclusion, results support the view that deep learning techniques achieve su
 
 # Ensemble-Model Accuracy  
 
-| Dataset | Accuracy | Notes |
-| --- | --- | ------ |
-|EmoDB | 88% | |
-|RAVDESS | XX% | TBD, results varied from original work slightly |
-|SAVEE | XX% | TBD, results varied from original work slightly |
-|IEMOCAP | XX% | TBD, results vary from original work slightly |
+| Dataset | Accuracy |
+| --- | --- | 
+|EmoDB | 88% | 
+|RAVDESS | 62.5% |  
+|SAVEE | 65% |  
+|IEMOCAP | 50.45% |  
 
+For details on the individual models which the ensembles were comprised of, and their hyperparameters, see DL_models.txt in /models/
 
 
 # Comparison With Contemporary Research
@@ -74,7 +75,7 @@ IEMOCAP appeared to the most popular dataset for SI SER, and I found the largest
 | Amjad et al. 2021 | Mel Spectrogram | Pre-trained AlexNet for feature extraction, CFS for feature selection, traditional ML techniques compared with MLP for classification | 92.65% WAR | MLP classifier performed best for EmoDB |
 | Xu et al. 2022 | Mel Spectrogram, MFCC, handcrafted features | Feature vectors from three models concatenated; fourth model trained with fully connected layer | 90.61% Accuracy | |
 | Farooq et al. 2020 | Mel Spectrogram | AlexNet feature extraction, CFS feature selection, classification via MLP or traditional ML | 90.50% WAR | MLP gave best result |
-| This project | Raw waveform, Mel Spectrogram, MFCC | Ensemble of three CNN models separately trained on each representation | 92% UAR, 91% WAR, 91% Accuracy | |
+| This project | Raw waveform, Mel Spectrogram, MFCC | Ensemble of three CNN models separately trained on each representation | 87.93% Accuracy | |
 | Sayed et al. 2025 | Wavelet Scaled Spectrogram | CNN + LSTM | 87.78% Accuracy | Mean of 3 folds |
 | Human | — | — | 86% Average Unweighted Accuracy | Mean from human evaluation results (Burkhardt, 2005) |
 | Meng et al. 2019 | 3D Mel Spectrogram | 3D Dilated CNN + BiLSTM + Residual Block | 85.39% Accuracy | |
@@ -88,7 +89,7 @@ IEMOCAP appeared to the most popular dataset for SI SER, and I found the largest
 | Amjad et al. 2021 | Mel Spectrogram | Pre-trained AlexNet feature extraction, CFS feature selection, classification with MLP or traditional ML | 82.75% WAR | MLP performed best |
 | Sayed et al. 2025 | Wavelet Scaled Spectrogram | CNN + LSTM | 73.75% Accuracy | Average of 3 folds |
 | Farooq et al. 2020 | Mel Spectrogram | AlexNet feature extraction + CFS + ML classifiers | 73.50% | MLP gave best result |
-| THIS STUDY | Raw waveform, Mel Spectrogram, MFCC | Ensemble of three CNN models trained on each representation | TBD, results varied from original work slightly and need to be updated | |
+| THIS STUDY | Raw waveform, Mel Spectrogram, MFCC | Ensemble of three CNN models trained on each representation | 62.5% | |
 | Rintala 2024 | Raw audio | CNN + LSTM with parallel branches | 61.67% Accuracy | Based on Latif (2019) |
 | Human | — | — | 62% Accuracy | |
 
@@ -98,7 +99,7 @@ IEMOCAP appeared to the most popular dataset for SI SER, and I found the largest
 | Amjad et al. 2021 | Mel Spectrogram | Pre-trained AlexNet feature extraction, CFS feature selection, classification via MLP | 75.38% WAR | Best result obtained with MLP |
 | Farooq et al. 2020 | Mel Spectrogram | AlexNet feature extraction + CFS + ML classifiers | 66.90% WAR | MLP performed best |
 | Human | — | — | 66.5% Average Accuracy | |
-| THIS STUDY | Raw waveform, Mel Spectrogram, MFCC | Ensemble of three CNN models trained on different representations | TBD, results varied from original work slightly and need to be updated | |
+| THIS STUDY | Raw waveform, Mel Spectrogram, MFCC | Ensemble of three CNN models trained on different representations | 65% | Achieved comparable performance with human, but it seems this dataset is too small and with too few speakers for a DL model relying on large datasets|
 | Sivanagaraja et al. 2017 | Raw waveform | Multiple convolution branches with different downsampling scales | 50.28% Accuracy | |
 
 ## IEMOCAP
@@ -113,7 +114,7 @@ IEMOCAP appeared to the most popular dataset for SI SER, and I found the largest
 | Fayek et al. 2017 | Raw waveform | CNN end-to-end | 60.89% UAR | Frame-based approach performed best |
 | Latif 2019 | Raw waveform | CNN + LSTM + DNN | 60.23% UAR | Early parallel-branch SER architecture |
 | Vladimir Chernykh 2018 | MFCC + Chroma features | Frame-wise Bi-LSTM | 54% Accuracy | |
-| THIS STUDY | Raw waveform, Mel Spectrogram, MFCC | Ensemble of three CNN models trained on each representation | TBD, results varied from original work slightly and need to be updated | |
+| THIS STUDY | Raw waveform, Mel Spectrogram, MFCC | Ensemble of three CNN models trained on each representation | 50.45% | The most popular dataset for DL-SER research, the most complex and natural dataset seems to require more complex and intensive approaches than my own|
 | Han 2014 | Handcrafted features (MFCC, pitch, delta) | DNN feature extraction + ELM classifier | 48.2% UAR | |
 
 # Instructions
