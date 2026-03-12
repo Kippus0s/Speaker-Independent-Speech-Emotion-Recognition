@@ -14,7 +14,7 @@ This project was created to verify the integrity of my results, and as an update
 on the same level as the dataset folders.
 Do not modify the original dataset's files or directory structure
 
-4 To create the baseline models using the traditional ML approach with openSMILE, run train_baselines.py
+4. To create the baseline models using the traditional ML approach with openSMILE, run train_baselines.py
 See train_baselines.py for instructions and commandline argument explanations. 
 
 5. Deep Learning model preprocesssing and training To test a model, you must first preprocess the dataset
@@ -27,7 +27,7 @@ See train_baselines.py for instructions and commandline argument explanations.
    on the models specified.
 
 
-train_model.py and ensemble.py will print results to the command line for you, and a confusion matrix will also be saved to confusion_matrices folder created in your working directory for you to view.
+train_model.py and ensemble.py will print results to the command line, and a confusion matrix will also be saved to confusion_matrices folder created in your working directory for you to view.
 
 
 ### Dependencies 
