@@ -5,6 +5,8 @@ This project was created to verify the integrity of my results, and as an update
 
 # Instructions
 
+All scripts are designed to be cross-platform. However as of now tensorflow is effectively linux-only due to CUDA compatability, if you circumvent this by disabling such functionality you may see different results to those purported here.
+
 1. Download the dataset(s).
    
 2. Extract the dataset(s) into the same project directory, the upper-most folder for each each dataset your project directory "EmoDB" , "IEMOCAP_full_release_withoutVideos" ,
