@@ -1,18 +1,18 @@
-| Model Name | Dataset | Preprocessing | Sample rate | Duration | Batch size | Max epochs | Class-Weight Normalisation | Accuracy |
-|------------------|----------------------------------------|------------|---------|------------|------------|---------------------------|----------|
-| emodb_wav         | EmoDB | Z-score normalisation and duration normalisation | 16000      | 4       | 16         | 50         | 1                         | 70.07%   |
-| emodb_mel         | EmoDB | Z-score normalisation and duration normalisation | 16000      | 4       | 16         | 100        | 0                         | 62.00%   |
-| emodb_mfcc        | EmoDB | Z-score normalisation and duration normalisation | 16000      | 4       | 4          | 100        | 0                         | 89.67%   |
-| EmoDB Ensemble    | EmoDB                                    | N/A        | N/A     | N/A        | N/A        | N/A                       | 87.93%   |
-| ravdess_wav       | RAVDESS | duration normalisation        | 16000      | 4       | 16         | 50         | 1                         | 46.67%   |
-| ravdess_mel       | RAVDESS | Z-score normalisation and duration normalisation | 16000      | 4       | 16         | 100        | 1                         | 60.00%   |
-| ravdess_mfcc      | RAVDESS | Z-score normalisation and duration normalisation | 16000      | 4       | 16         | 100        | 1                         | 53.33%   |
-| RAVDESS Ensemble  | RAVDESS                                    | N/A        | N/A     | N/A        | N/A        | N/A                       | 62.50%   |
-| savee_wav         | SAVEE | Z-score normalisation and duration normalisation | 16000      | 5       | 16         | 20         | 0                         | 65.00%   |
-| savee_mel         | SAVEE | Z-score normalisation and duration normalisation | 16000      | 5       | 16         | 100        | 1                         | 45.83%   |
-| savee_mfcc        | SAVEE | Z-score normalisation and duration normalisation | 16000      | 5       | 4          | 46         | 0                         | 44.17%   |
-| SAVEE Ensemble    | SAVEE                                    | N/A        | N/A     | N/A        | N/A        | N/A                       | 65.00%   |
-| iemocap_wav       | IEMOCAP | only fixed duration normalisation | 16000      | 5       | 16         | 50         | 1                         | 52.53%   |
-| iemocap_mel       | IEMOCAP | Z-score normalisation and duration normalisation | 16000      | 7       | 16         | 100        | 1                         | 45.68%   |
-| iemocap_mfcc      | IEMOCAP | Z-score normalisation and duration normalisation | 16000      | 7       | 4          | 100        | 1                         | 46.43%   |
-| IEMOCAP Ensemble  | IEMOCAP  | N/A                                 | N/A        | N/A     | N/A        | N/A        | N/A                       | 50.45%   |
+| Model Name        | Dataset   | Preprocessing                          | Sample rate | Duration | Batch size | Max epochs | Class-Weight Normalisation | Accuracy |
+|------------------|-----------|----------------------------------------|------------|---------|------------|------------|---------------------------|----------|
+| emodb_wav        | EmoDB     | Z-score normalisation and duration normalisation | 16000      | 4       | 16         | 50         | 1                         | 70.07%   |
+| emodb_mel        | EmoDB     | Z-score normalisation and duration normalisation | 16000      | 4       | 16         | 100        | 0                         | 62.00%   |
+| emodb_mfcc       | EmoDB     | Z-score normalisation and duration normalisation | 16000      | 4       | 4          | 100        | 0                         | 89.67%   |
+| EmoDB Ensemble   | EmoDB     | N/A                                    | N/A        | N/A     | N/A        | N/A        | N/A                       | 87.93%   |
+| ravdess_wav      | RAVDESS   | duration normalisation                  | 16000      | 4       | 16         | 50         | 1                         | 46.67%   |
+| ravdess_mel      | RAVDESS   | Z-score normalisation and duration normalisation | 16000      | 4       | 16         | 100        | 1                         | 60.00%   |
+| ravdess_mfcc     | RAVDESS   | Z-score normalisation and duration normalisation | 16000      | 4       | 16         | 100        | 1                         | 53.33%   |
+| RAVDESS Ensemble | RAVDESS   | N/A                                    | N/A        | N/A     | N/A        | N/A        | N/A                       | 62.50%   |
+| savee_wav        | SAVEE     | Z-score normalisation and duration normalisation | 16000      | 5       | 16         | 20         | 0                         | 65.00%   |
+| savee_mel        | SAVEE     | Z-score normalisation and duration normalisation | 16000      | 5       | 16         | 100        | 1                         | 45.83%   |
+| savee_mfcc       | SAVEE     | Z-score normalisation and duration normalisation | 16000      | 5       | 4          | 46         | 0                         | 44.17%   |
+| SAVEE Ensemble   | SAVEE     | N/A                                    | N/A        | N/A     | N/A        | N/A        | N/A                       | 65.00%   |
+| iemocap_wav      | IEMOCAP   | only fixed duration normalisation      | 16000      | 5       | 16         | 50         | 1                         | 52.53%   |
+| iemocap_mel      | IEMOCAP   | Z-score normalisation and duration normalisation | 16000      | 7       | 16         | 100        | 1                         | 45.68%   |
+| iemocap_mfcc     | IEMOCAP   | Z-score normalisation and duration normalisation | 16000      | 7       | 4          | 100        | 1                         | 46.43%   |
+| IEMOCAP Ensemble | IEMOCAP   | N/A                                    | N/A        | N/A     | N/A        | N/A        | N/A                       | 50.45%   |
