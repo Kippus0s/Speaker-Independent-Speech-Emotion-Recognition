@@ -12,6 +12,17 @@ import librosa.display
 import soundfile as sf
 import argparse 
 
+# Command-line arguments:
+"""
+which_dataset      : which dataset to process (incl. emodb, savee, iemocap, ravdess)
+sample_rate       : sampling rate in Hz
+sample_duration   : duration of each sample in seconds
+z_score           : whether to z-score normalize at this preprocessing stage ('y' or 'n')
+--output (optional): name for output directory name to avoid overwriting previous runs
+ex.  python dataset_preprocess.py emodb 16000 4 y 
+or ex. python dataset_preprocess.py savee 16000 3 n --output new_output_directory_name """
+
+
 # Validation split constants
 """ These are the speakers I used for my study, but experiementation with different splits, or cross-validation is welcome
 Rather than perform cross-validation, I performed a simple single-pass speaker-independent validation
@@ -396,3 +407,4 @@ def main():
 if __name__ == "__main__":
     main()
      
+
