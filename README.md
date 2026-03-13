@@ -11,10 +11,11 @@ All scripts are designed to be cross-platform. However as of now tensorflow is e
    
 2. Extract the dataset(s) into your project's "datasets" directory, preserving the original dataset structure as follows: 
 
-   ```Project_root/datasets/EmoDB/wav/audiofile.wav
+   ```
+   Project_root/datasets/EmoDB/wav/audiofile.wav
    Project_root/datasets/IEMOCAP/IEMOCAP_full_release_withoutVideos/IEMOCAP_full_release/Session1/etc...
    Project_root/datasets/SAVEE/AudioData/JE/audiofile.wav 
-   Project_root/datasets/RAVDESS/Actor_01/audiofile.wav the upper-most folder for each each dataset your project directory
+   Project_root/datasets/RAVDESS/Actor_01/audiofile.wav 
    ```
 
    Rather than search for audio files by name, the scripts will iterate over a CSV file which contains a list of all audio samples used, including a path to said file. This is because the directory structure of certain datasets can be quite complex, as they denote dataset      metadata such as the speaker identity, or the emotion that the particular sample conveys.
