@@ -194,7 +194,7 @@ def create_datasets(df_train, df_val, df_test, DATASET, DATATYPE, SAMPLE_RATE, S
 #Using utility functiosn from prepare_tf_datasets, we now create the tf dataset objects for training, validation and testing.
 def create_tf_datasets(DATASET, DATATYPE, SAMPLE_RATE, SAMPLE_DURATION, BATCH_SIZE, PREPROCESSED_ROOT_DIR):
     #Creating the tensorflow dataset objects
-    csv_path = os.path.join(root_path, DATASET_MAP[DATASET.lower()])
+    csv_path = os.path.join(root_path, "datasets", DATASET_MAP[DATASET.lower()])
     df_train = pd.read_csv(os.path.join(csv_path, "train.csv"))
     df_val   = pd.read_csv(os.path.join(csv_path, "val.csv"))
     df_test  = pd.read_csv(os.path.join(csv_path, "test.csv"))
