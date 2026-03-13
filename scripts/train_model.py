@@ -1,5 +1,6 @@
 # train_model.py 
 import os
+import sys
 import time
 import json
 import pandas as pd
@@ -17,12 +18,16 @@ from tensorflow.keras.regularizers import l2, l1, l1_l2
 from tensorflow.keras.callbacks import EarlyStopping, Callback
 
 from evaluate import *
-from utilities.class_weight import class_weight_maker
 from prepare_tf_datasets import *
-from models import model_specs, callbacks
+
+root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.join(root_dir, "utilities"))
+sys.path.append(os.path.join(root_dir, "models"))
+from class_weight import class_weight_maker
+import model_specs, callbacks
 
 """
-Usage:
+Arguments:
 Ex: emodb mfcc 16000 4 16 norm_and_fixedduration emodb_mfcc y
 
 DATASET
@@ -55,7 +60,6 @@ Choices: "y", "n"
 Default: "n"
 Purpose: If "y", class weights are normalized to balance the contribution of each class during training. Affects the class_weight argument in model.fit().
 """
-
 
 
 #Determinism via seeding and enforcing deterministic gpu operations - ensuring identical results between runs
@@ -139,12 +143,12 @@ def main(args):
     PREPROCESSED_ROOT_DIR = args.PREPROCESSED_ROOT_DIR    
     model_name = args.model_name
     cw_flag = args.normalise_class_weights
-    
+    root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     #Running utility functions to get the dataset path and shape of the data (duration, sample size and data representation all factors)
     DATASET_PATH = get_dataset_path(DATATYPE, PREPROCESSED_ROOT_DIR, DATASET)
-    root_path = os.path.join(os.getcwd(), DATASET_MAP[DATASET.lower()])
-    df_train = pd.read_csv(os.path.join(root_path, "train.csv"))
+    dataset_root = os.path.join(root_dir, "datasets", DATASET_MAP[DATASET.lower()])
+    df_train = pd.read_csv(os.path.join(dataset_root, "train.csv"))
     INPUT_SHAPE = get_input_shape(DATASET, DATATYPE, DATASET_PATH, df_train, SAMPLE_RATE, SAMPLE_DURATION)
   
     #Creating the tensorflow dataset objects, and building the model, passing the training data to normalise
@@ -188,7 +192,7 @@ def main(args):
     
     
 if __name__ == "__main__":
+    #Derive cmdline args
     args = parse_args()
     main(args)
-
 
