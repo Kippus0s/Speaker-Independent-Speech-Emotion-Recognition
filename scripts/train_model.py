@@ -55,10 +55,14 @@ model_name
 Specifies the model configuration to use from models.model_specs. Dynamically converted to a callable that returns a compiled model.
 
 normalise_class_weights
-Type: str
 Choices: "y", "n"
 Default: "n"
 Purpose: If "y", class weights are normalized to balance the contribution of each class during training. Affects the class_weight argument in model.fit().
+
+--output
+optional
+filename suffix, for example, entering TEST will result in a filename of dataset_datatype_TEST_weights
+
 """
 
 
@@ -129,6 +133,14 @@ def parse_args():
         help="Normalise class weights, makes a moderate difference in most cases for better or for worse"
     )
   
+    parser.add_argument(
+        "--output",
+        type=str,
+        default=None,
+        help="Optional suffix to append to the the filename, so predictions and weights do not overwrite previous experiments," \
+        "for example, entering TEST will result in a filename of dataset_datatype_TEST_weights"
+        )    
+    
     args = parser.parse_args()
     return args
 
@@ -141,6 +153,7 @@ def main(args):
     SAMPLE_DURATION = args.SAMPLE_DURATION
     BATCH_SIZE = args.BATCH_SIZE
     PREPROCESSED_ROOT_DIR = args.PREPROCESSED_ROOT_DIR    
+    filename_suffix = args.output
     model_name = args.model_name
     cw_flag = args.normalise_class_weights
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -185,6 +198,8 @@ def main(args):
     # Saving training weights, history, plotting confusion matrix and saving the image, 
     # and rendering a class-by-class accuracy report
     filename = str(DATASET) + "_" + str(DATATYPE)
+    if args.filename is not None:
+        filename = str(DATASET) + "_" + str(DATATYPE) + filename_suffix 
     save_weight_history(model,history,filename,test_ds)
     save_preds_and_true(model, filename, test_ds)
     plot_cm(model, filename, test_ds, DATASET, LABEL_MAP)
