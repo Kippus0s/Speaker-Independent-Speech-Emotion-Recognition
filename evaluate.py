@@ -11,14 +11,15 @@ from tensorflow.keras.regularizers import l2, l1, l1_l2
 from tensorflow.keras.callbacks import EarlyStopping, Callback
 from sklearn.metrics import accuracy_score, classification_report
 
+root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def save_weight_history(model, history, filename,test_ds):
     #Saving weights and training history 
     os.makedirs("weights", exist_ok=True)
-    model.save(os.path.join(os.getcwd(), "weights", filename + "_weights.keras"))
+    model.save(os.path.join(root_dir, "weights", filename + "_weights.keras"))
 
     os.makedirs("training_history", exist_ok=True)
-    with open((os.path.join(os.getcwd(), "training_history", filename + "_history")), 'w') as f:
+    with open((os.path.join(root_dir, "training_history", filename + "_history")), 'w') as f:
         json.dump(history.history, f)
 
    
@@ -28,7 +29,7 @@ def save_preds_and_true(model, filename, test_ds):
     os.makedirs("model_predictions", exist_ok=True)
     preds = model.predict(test_ds)
     np.save(str(filename) + "_preds", preds)
-    np.save(os.path.join(os.getcwd(), "model_predictions", filename + "_preds.npy"), preds)
+    np.save(os.path.join(root_dir, "model_predictions", filename + "_preds.npy"), preds)
 
     # Extract true labels for test set
     true_labels = []
@@ -66,7 +67,7 @@ def plot_cm(model, filename, test_ds, DATASET, LABEL_MAP):
         plt.xticks(fontsize=5)
         plt.yticks(fontsize=5)
         disp.plot(cmap="Blues",ax=ax)
-        plt.savefig((os.path.join(os.getcwd(), "confusion_matrices", filename + "_cm.png", )), dpi=300, bbox_inches='tight')
+        plt.savefig((os.path.join(root_dir, "confusion_matrices", filename + "_cm.png", )), dpi=300, bbox_inches='tight')
 
 def display_class_report(model, test_ds):
     preds = model.predict(test_ds)
