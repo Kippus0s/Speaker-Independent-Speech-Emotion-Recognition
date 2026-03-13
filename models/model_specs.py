@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import Sequential, optimizers, layers
 from tensorflow.keras.layers import *
-from models import callbacks 
+import callbacks 
 
 def emodb_wav (INPUT_SHAPE, train_ds):
     norm_layer = layers.Normalization(input_shape = INPUT_SHAPE)
