@@ -139,8 +139,8 @@ IEMOCAP appeared to the most popular dataset for SI SER, and I found the largest
 | Sayed et al. 2025 | Wavelet Scaled Spectrogram | CNN + LSTM | 73.75% Accuracy | Average of 3 folds |
 | Farooq et al. 2020 | Mel Spectrogram | AlexNet feature extraction + CFS + ML classifiers | 73.50% | MLP gave best result |
 | This project| Raw waveform, Mel Spectrogram, MFCC | Ensemble of three CNN models trained on each representation | 62.5% | |
-| Rintala 2024 | Raw audio | CNN + LSTM with parallel branches | 61.67% Accuracy | Based on Latif (2019) |
 | Human | — | — | 62% Accuracy | |
+| Rintala 2024 | Raw audio | CNN + LSTM with parallel branches | 61.67% Accuracy | Based on Latif (2019) |
 
 ## SAVEE
 | Study | Data Representation | Methodology | Evaluation Result | Notes |
