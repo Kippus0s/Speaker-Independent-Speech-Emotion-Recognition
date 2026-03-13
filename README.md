@@ -64,7 +64,7 @@ Four datasets for SER were used, EmoDB, IEMOCAP, SAVEE, and RAVDESS, and between
 
 In conclusion, results support the view that deep learning techniques achieve superior performance on speaker-independent speech emotion recognition compared to traditional ML approaches that rely on domain knowledge via handcrafted audio features. However, this study did not use handcrafted features at all in a DL model, and yet this approach has been shown to be succesful, in both standalone models and as part of an ensemble with other DL models using different data representations.
 
-# Speech Emotion Recognition Datasets Used in This Project
+# Datasets used in this Project
 ## Dataset Characteristics
 
 | Attribute | Emo-DB | SAVEE | IEMOCAP | RAVDESS |
