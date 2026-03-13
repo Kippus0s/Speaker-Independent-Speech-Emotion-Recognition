@@ -105,23 +105,23 @@ def get_dataset_paths(which_dataset):
 
     if which_dataset == "emodb":
         dataset_name = "EmoDB"        
-        DATASET_PATH = os.path.join(root_dir, dataset_name)
+        DATASET_PATH = os.path.join(root_dir, "datasets", dataset_name)
         csv_path = os.path.join(root_dir, "csv", "emodb.csv")
         
     elif which_dataset == "iemocap":
         dataset_name = "IEMOCAP"         
-        DATASET_PATH = os.path.join(root_dir, dataset_name, "IEMOCAP_full_release_withoutVideos","IEMOCAP_full_release")
+        DATASET_PATH = os.path.join(root_dir, "datasets", dataset_name, "IEMOCAP_full_release_withoutVideos","IEMOCAP_full_release")
         csv_path = os.path.join(root_dir, "csv", "iemocap.csv")
         
     elif which_dataset == "ravdess":
         dataset_name = "RAVDESS"        
-        DATASET_PATH = os.path.join(root_dir, dataset_name)
+        DATASET_PATH = os.path.join(root_dir, "datasets", dataset_name)
         csv_path = os.path.join(root_dir, "csv", "ravdess.csv")
         
     elif which_dataset == "savee":
         dataset_name = "SAVEE"
         
-        DATASET_PATH = os.path.join(root_dir, dataset_name, "AudioData")
+        DATASET_PATH = os.path.join(root_dir, "datasets", dataset_name, "AudioData")
         csv_path = os.path.join(root_dir, "csv", "savee.csv")
         
     else:
@@ -191,6 +191,7 @@ def data_split(which_dataset, df, DATASET_PATH):
           if not os.path.exists(DATASET_PATH):
                os.makedirs(DATASET_PATH)
                
+     
 
           df_train.to_csv(os.path.join(DATASET_PATH, 'train.csv'), index=False)
           print(df_train.isna().sum())  # total NaNs per column)
