@@ -192,11 +192,11 @@ def data_split(which_dataset, dataset_name, df, DATASET_PATH):
                
           
           
-          df_train.to_csv(os.path.join(root_dir, dataset_name, 'train.csv'), index=False)
+          df_train.to_csv(os.path.join(root_dir, "datasets", dataset_name, 'train.csv'), index=False)
           print(df_train.isna().sum())  # total NaNs per column)
-          df_val.to_csv(os.path.join(root_dir, dataset_name, 'val.csv'), index=False)
+          df_val.to_csv(os.path.join(root_dir, "datasets", dataset_name, 'val.csv'), index=False)
           print(df_val.isna().sum())  # total NaNs per column)
-          df_test.to_csv(os.path.join(root_dir, dataset_name, 'test.csv'), index=False)
+          df_test.to_csv(os.path.join(root_dir,"datasets", dataset_name,  'test.csv'), index=False)
           print(df_test.isna().sum())  # total NaNs per column)
 
           print(f"Train samples: {len(df_train)}")
