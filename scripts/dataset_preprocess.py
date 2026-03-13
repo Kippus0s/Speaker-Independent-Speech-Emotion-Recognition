@@ -1,7 +1,4 @@
 # dataset_preprocess.py
-# Dependencies: pandas, numpy, librosa, soundfile
-# Run this script from the root folder containing the four dataset folders in their original strucuture
-
 from importlib.resources import files
 import sys
 import os 
@@ -21,7 +18,6 @@ z_score           : whether to z-score normalize at this preprocessing stage ('y
 --output (optional): name for output directory name to avoid overwriting previous runs
 ex.  python dataset_preprocess.py emodb 16000 4 y 
 or ex. python dataset_preprocess.py savee 16000 3 n --output new_output_directory_name """
-
 
 # Validation split constants
 """ These are the speakers I used for my study, but experiementation with different splits, or cross-validation is welcome
@@ -43,6 +39,7 @@ NUM_MEL_BINS = 128
 LOWER_EDGE_HERTZ = 80.0 # Human speech is not lower
 UPPER_EDGE_HERTZ = 7600.0 # Higher is inaudbile to humans   
 N_MFCC = 40
+root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Command-line arguments:
 """
@@ -104,39 +101,36 @@ The CSV files have been provided.
 However, The CSV files needs to be in same root folder as this script so the functions can find it. 
 """
 
-def get_dataset_paths(which_dataset):
-    cwd = os.getcwd()
+def get_dataset_paths(which_dataset):   
+
     if which_dataset == "emodb":
-        dataset_name = "EmoDB"
-        data_path = os.path.join(cwd, dataset_name)
-        DATASET_PATH = dataset_name
-        csv_path = os.path.join(cwd, "csv", "emodb.csv")
+        dataset_name = "EmoDB"        
+        DATASET_PATH = os.path.join(root_dir, dataset_name)
+        csv_path = os.path.join(root_dir, "csv", "emodb.csv")
         
     elif which_dataset == "iemocap":
-        dataset_name = "IEMOCAP"
-        data_path = os.path.join(cwd, dataset_name)
-        DATASET_PATH = os.path.join(cwd,"IEMOCAP_full_release_withoutVideos","IEMOCAP_full_release")
-        csv_path = os.path.join(cwd, "csv", "iemocap.csv")
+        dataset_name = "IEMOCAP"         
+        DATASET_PATH = os.path.join(root_dir, dataset_name, "IEMOCAP_full_release_withoutVideos","IEMOCAP_full_release")
+        csv_path = os.path.join(root_dir, "csv", "iemocap.csv")
         
     elif which_dataset == "ravdess":
-        dataset_name = "RAVDESS"
-        data_path = os.path.join(cwd, dataset_name)
-        DATASET_PATH = data_path
-        csv_path = os.path.join(cwd, "csv", "ravdess.csv")
+        dataset_name = "RAVDESS"        
+        DATASET_PATH = os.path.join(root_dir, dataset_name)
+        csv_path = os.path.join(root_dir, "csv", "ravdess.csv")
         
     elif which_dataset == "savee":
         dataset_name = "SAVEE"
-        data_path = os.path.join(cwd, dataset_name)
-        DATASET_PATH = os.path.join(dataset_name, "AudioData")
-        csv_path = os.path.join(cwd, "csv", "savee.csv")
+        
+        DATASET_PATH = os.path.join(root_dir, dataset_name, "AudioData")
+        csv_path = os.path.join(root_dir, "csv", "savee.csv")
         
     else:
         raise ValueError("Incorrect dataset provided, options are: emodb, iemocap, ravdess, savee")
     
-    return dataset_name, data_path, DATASET_PATH, csv_path
+    return dataset_name, DATASET_PATH, csv_path
 
 
-def listwavs(dataframe, SAMPLE_RATE, dataset_name, dataset_path, data_path):
+def listwavs(dataframe, SAMPLE_RATE, dataset_name, dataset_path):
      list_wavs = []
      for file in dataframe['file']:
           audio_file_path = audio_file_parser(file, dataset_name, dataset_path)
@@ -185,7 +179,7 @@ def save_output(wave, filename, out_path, SAMPLE_RATE):
 
 
 # Main dataset preprocessing functions     
-def data_split(which_dataset, df, data_path):
+def data_split(which_dataset, df, DATASET_PATH):
           val_speaker = DATASET_SPEAKER_DEFAULTS[which_dataset]['val_speaker']
           test_speaker = DATASET_SPEAKER_DEFAULTS[which_dataset]['test_speaker']
           # Split based on speaker column
@@ -194,15 +188,15 @@ def data_split(which_dataset, df, data_path):
           df_train = df[~df['speaker'].isin(val_speaker)].reset_index(drop=True)
           df_train = df_train[~df_train['speaker'].isin(test_speaker)].reset_index(drop=True)
 
-          if not os.path.exists(data_path):
-               os.makedirs(data_path)
+          if not os.path.exists(DATASET_PATH):
+               os.makedirs(DATASET_PATH)
                
 
-          df_train.to_csv(os.path.join(data_path, 'train.csv'), index=False)
+          df_train.to_csv(os.path.join(DATASET_PATH, 'train.csv'), index=False)
           print(df_train.isna().sum())  # total NaNs per column)
-          df_val.to_csv(os.path.join(data_path,'val.csv'), index=False)
+          df_val.to_csv(os.path.join(DATASET_PATH,'val.csv'), index=False)
           print(df_val.isna().sum())  # total NaNs per column)
-          df_test.to_csv(os.path.join(data_path,'test.csv'), index=False)
+          df_test.to_csv(os.path.join(DATASET_PATH,'test.csv'), index=False)
           print(df_test.isna().sum())  # total NaNs per column)
 
           print(f"Train samples: {len(df_train)}")
@@ -221,7 +215,7 @@ def data_split(which_dataset, df, data_path):
           
   
 # Audio sample duration andsample rate adjustment, and optional z-score normalisation.
-def norm_script(which_dataset, z_score, DATASET_PATH, data_path, dataset_name, SAMPLE_RATE, SAMPLE_DURATION, csv_path, out_path, output_arg, df):     
+def norm_script(which_dataset, z_score, DATASET_PATH, dataset_name, SAMPLE_RATE, SAMPLE_DURATION, csv_path, out_path, output_arg, df):     
 
      # Z-score normalisation          
      """
@@ -230,8 +224,8 @@ def norm_script(which_dataset, z_score, DATASET_PATH, data_path, dataset_name, S
      # Note this is not ideal, as we are loading the entire training dataset into memory at once, but it is simpler to implement and the datasets are small enough that it should not cause memory issues. 
      # An alternative  implementation would compute the mean and std in a streaming fashion without loading everything at once, although this step would take longer to run in that case. """
      
-     dataset_path = os.path.join(os.getcwd(), data_path)
-     globalaudio = np.concatenate(listwavs(pd.read_csv(os.path.join(dataset_path,"train.csv")), SAMPLE_RATE, dataset_name, DATASET_PATH, data_path))
+     dataset_path = os.path.join(root_dir, DATASET_PATH)
+     globalaudio = np.concatenate(listwavs(pd.read_csv(os.path.join(dataset_path,"train.csv")), SAMPLE_RATE, dataset_name, DATASET_PATH))
      mean = np.mean(globalaudio)
      std = np.std(globalaudio)
      print("Progress: global values for z-score normalisation calculated")
@@ -382,7 +376,7 @@ def main():
     print("Z-score normalisation:", z_score)
 
     # Get dataset paths
-    dataset_name, data_path, DATASET_PATH, csv_path = get_dataset_paths(which_dataset)
+    dataset_name, DATASET_PATH, csv_path = get_dataset_paths(which_dataset)
 
     # Override if user supplied optional output directory argument
     output_dir = (
@@ -399,12 +393,10 @@ def main():
 
     
     # Run the main preprocessing functions in order
-    data_split(which_dataset, df, data_path)
-    #norm_script_test(which_dataset, z_score, DATASET_PATH, data_path, dataset_name, SAMPLE_RATE, SAMPLE_DURATION, csv_path, out_path, output_arg, df)
-    norm_script(which_dataset, z_score, DATASET_PATH, data_path, dataset_name, SAMPLE_RATE, SAMPLE_DURATION, csv_path, out_path, output_arg, df)
+    data_split(which_dataset, df, DATASET_PATH)
+    norm_script(which_dataset, z_score, DATASET_PATH, dataset_name, SAMPLE_RATE, SAMPLE_DURATION, csv_path, out_path, output_arg, df)
     mel_mfcc(out_path, which_dataset, SAMPLE_RATE, df, output_arg)
 
 if __name__ == "__main__":
     main()
      
-
