@@ -14,14 +14,11 @@ def class_weight_maker(ds):
     """Using method from "Class weights Calculate class weights" section in https://www.tensorflow.org/tutorials/structured_data/imbalanced_data """
     #class_weight parameter in fit() requires a dictionary, so I iteratively fill it using the formula from above link, and the counts collection that was provided in the sample dataset
     #Creating the class_weight dictionary
-    print("train ds size = " ,TRAIN_DS_SIZE) # All of the print statements are to help me finish writing the function, to facilitate debugging mid-execution on test runs.
     labels = []
     for (item,label) in ds_unbatched:
         labels.append(label.numpy())
     labels = pd.Series(labels)
-    print(labels) # This shows all items by index, and the value is the emotion label for a given item
-    counts = labels.value_counts().sort_index() # Counts variable contains count of all classes in the dataset
-    print(counts)
+    counts = labels.value_counts().sort_index() # Counts variable contains count of all classes in the dataset    
     class_weight = {}
     x = 0
     for i in counts.values: #Iterate through the values in counts        
