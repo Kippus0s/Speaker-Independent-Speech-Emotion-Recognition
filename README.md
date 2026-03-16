@@ -1,13 +1,13 @@
 # Speaker-Independent Speech Emotion Recognition
 For the final project of my Bachelor's of Science in Computing & IT, I worked on a Machine Learning (ML) project entitled "Investigating Machine Learning and Deep Learning approaches to Speech Emotion Recognition".
 
-This project was created to prove the integrity of my results, and as an updated and refactored version of the original implementation. The project has been refactored and reorganised, allowing the same components to work across the different dataset, and with command line arguments modifying hyperparameter values. I hope it can be of assistance to others embarking undertaking ML-based or ML-assisted research, and especially Speech Emotion Recognition (SER) research. 
+This project was created to prove the integrity of my results, and as an updated and refactored version of the original implementation. The project has been refactored and reorganised, allowing the same components to work across the different dataset, and with command line arguments modifying hyperparameter values. I believe the this study will be of assistance to others embarking on ML-based or ML-assisted research, and especially Speech Emotion Recognition (SER) research. 
 
 # Instructions
 
-All scripts are designed to be cross-platform. However as of now tensorflow is effectively linux-only due to CUDA compatability, if you circumvent this by disabling such functionality you may see different results to those purported here.
+All scripts are designed to be cross-platform. However as of now tensorflow is effectively linux-only due to CUDA compatibility, if you circumvent this by disabling such functionality you may see different results to those purported here.
 
-1. Download the SER dataset(s), and download this repository. (If you are only interested in verifying the post-decision fusion ensemble results, you can simply download the model_predictions folder and scripts from this repository and run ensemble.py from the commnadline using the arguments explained in the comments of ensemble.py)
+1. Download the SER dataset(s), and download this repository. (If you are only interested in verifying the post-decision fusion ensemble results, you can simply download the model_predictions folder and scripts from this repository and run ensemble.py from the command-line using the arguments explained in the comments of ensemble.py)
    
 2. Extract the dataset(s) into your project's "datasets" directory, preserving the original dataset structure as follows: 
 
@@ -23,7 +23,7 @@ All scripts are designed to be cross-platform. However as of now tensorflow is e
    Therefore, It is essential this step is performed so your dataset structure is as above. This is because file paths are used to directly access audio samples, and the path to said filenames needs to match that of the paths in the CSV file for each dataset. 
 
    For example, make sure you do not have duplicate parent directory for a dataset such as "EmoDB/EmoDB/wav/etc" and IEMOCAP's root directory is IEMOCAP and not "IEMOCAP_full_release_without..."
-   For SAVEE,RAVDESS and EmoDB you can simply exctract the dataset archives you obtained in step 1 into the datasets folder and the structure will be identical without any user intervention required.
+   For SAVEE,RAVDESS and EmoDB you can simply extract the dataset archives you obtained in step 1 into the datasets folder and the structure will be identical without any user intervention required.
 
    **Special note for IEMOCAP:** You may need to create an "IEMOCAP" directory inside your "datasets" folder and extract the dataset there. Refer to the example dataset structure above. Other changes may be required depending on the version of IEMOCAP you have acquired. For example for IEMOCAP version that includes video, you will need to modify the upper level folders         slightly. These changes are extremely simple, yet easier and safer than modifying the file paths stored in each row in the iemocap.csv that dataset_preprocess.py refers to. Simply refer to the structure I have outlined above for IEMOCAP, and make that your own is        identical.
 
@@ -39,7 +39,7 @@ See train_baselines.py for instructions and explanations of the necessary argume
    
 7. Train the model using train_model.py - If you wish to recreate my results refer to the DL_Models.md document in /models/ and input the arguments I provide for a given model.
 
-8. Finally, once you have have trained mulitple models, you can create and test an post-decision ensemble using ensemble.py
+8. Finally, once you have have trained multiple models, you can create and test an post-decision ensemble using ensemble.py
    The training script will have saved predictions in a fixed format and  these will be located and used by ensemble.py depending
    on the models specified.
 
@@ -52,19 +52,19 @@ See requirements.txt
 
 
 # Project Summary 
-The project compared the traditional ML approach to SER with that of the modern Deep Learning (DL) approach. The study stands out amongst many contemporary work in the domain by virtue of being speaker-independent. That is, the model's training, validation and test data were segmented by speaker rather than purely by a arbritary percentage of the total dataset size. As a result, the model was not exposed to audio samples from the same voice that featured in validation or test data. This is because peaker-specific qualities "leak" into the learning process in speaker-dependent studies where training data includes samples from all speakers in the total dataset. Speaker-independent models usually do not perform on par with speaker-independent models, but an SER model can not be considered truly generalisable if it is speaker-dependent. 
+The project compared the traditional ML approach to SER with that of the modern Deep Learning (DL) approach. The study stands out amongst many contemporary work in the domain by virtue of being speaker-independent. That is, the model's training, validation and test data were segmented by speaker rather than purely by a arbitrary percentage of the total dataset size. As a result, the model was not exposed to audio samples from the same voice that featured in validation or test data. This is because speaker-specific qualities "leak" into the learning process in speaker-dependent studies where training data includes samples from all speakers in the total dataset. Speaker-independent models usually do not perform on par with speaker-independent models, but an SER model can not be considered truly generalisable if it is speaker-dependent. 
 
 The traditional ML approach was that of utilising handcrafted features, in this case I used OpenSMILE (open-source Speech and Music Interpretation by Large-space Extraction) to extract features according to the emobase feature set, and these features were then used to train a logistic regression classifier. 
 
 For the DL approach, I utilised a simple approach relative to the state of the art, my project utilises predominantly Convolutional Neural Networks (CNN), however I trained on three data representations separately, the raw waveforms (WAV), Mel Spectrograms, and Mel Frequency Cepstrum Coefficients (MFFCs). During my work I noticed that different models, especially from each of the different data representations, would often excel or struggle especially with certain emotions in particular, and it was rare that all the emotions were learned with a similar level of success. I therefore create a "post-fusion" or "late-fusion" ensemble model, by aggregating the class-probabilties (predictions) of the best-performing models for each of the data representations. In this way I demonstrated that a simple aggregate model can improve upon my single best-performing individual models. 
 
-Results were compared across the four datasets, between the CNN models and the different data representations, and between the Dland traditional ML classifier.
+Results were compared across the four datasets, between the CNN models and the different data representations, and between the DL and traditional ML classifier.
 
 Most of the time on my project was spent researching, and experimenting with data preprocessing optimisations, for example regarding neural network architecture optimisations for the CNNs, and after multiple iterations the DL approach outperformed the traditional ML approach despite it's leveraging of heuristic features. 
 
 Four datasets for SER were used, EmoDB, IEMOCAP, SAVEE, and RAVDESS, and between them I try and capture a balance and variety in dataset attributes. 
 
-In conclusion, results support the view that deep learning techniques achieve superior performance on speaker-independent speech emotion recognition compared to traditional ML approaches that rely on domain knowledge via handcrafted audio features. However, this study did not use handcrafted features at all in a DL model, and yet this approach has been shown to be succesful, in both standalone models and as part of an ensemble with other DL models using different data representations.
+In conclusion, results support the view that deep learning techniques achieve superior performance on speaker-independent speech emotion recognition compared to traditional ML approaches that rely on domain knowledge via handcrafted audio features. However, this study did not use handcrafted features at all in a DL model, and yet this approach has been shown to be succesful, in both stand-alone models and as part of an ensemble with other DL models using different data representations.
 
 # Datasets Used for This Project
 ## Dataset Characteristics
