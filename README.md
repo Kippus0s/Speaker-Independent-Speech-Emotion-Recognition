@@ -173,21 +173,35 @@ IEMOCAP appeared to the most popular dataset for SI SER, and I found the largest
 
 
 
-###References
-Amjad, A., Khan, L. and Chang, H.-T. (2021) ‘Effect on speech emotion classification of a feature selection approach using a convolutional neural network’, PeerJ Computer Science, 7, p. e766. https://doi.org/10.7717/peerj-cs.766
-Cai, X. et al. (2021) ‘Speech Emotion Recognition with Multi-Task Learning’, Interspeech 2021. https://doi.org/10.21437/interspeech.2021-1852
-Chen, M. et al. (2018) ‘3-D Convolutional Recurrent Neural Networks With Attention Model for Speech Emotion Recognition’, IEEE Signal Processing Letters, 25(10), pp. 1440–1444. https://doi.org/10.1109/lsp.2018.2860246
-Chernykh, V. and Prikhodko, P. (2018) ‘Emotion Recognition from Speech with Recurrent Neural Networks’, arXiv preprint. https://doi.org/10.48550/arXiv.1701.08071
-Farooq, M. et al. (2020) ‘Impact of Feature Selection Algorithm on Speech Emotion Recognition Using Deep Convolutional Neural Network’, Sensors, 20(21), p. 6008. https://doi.org/10.3390/s20216008
-Fayek, H.M., Lech, M. and Cavedon, L. (2017) ‘Evaluating deep learning architectures for Speech Emotion Recognition’, Neural Networks, 92, pp. 60–68. https://doi.org/10.1016/j.neunet.2017.02.013
-Han, K., Yu, D. and Tashev, I. (2014) ‘Speech Emotion Recognition Using Deep Neural Network and Extreme Learning Machine’, Interspeech 2014. https://doi.org/10.21437/interspeech.2014-57
-Latif, S. et al. (2019) ‘Direct Modelling of Speech Emotion from Raw Speech’, arXiv preprint. https://doi.org/10.48550/arxiv.1904.03833
-Meng, H. et al. (2019) ‘Speech Emotion Recognition From 3D Log-Mel Spectrograms With Deep Learning Network’, IEEE Access, 7, pp. 125868–125881. https://doi.org/10.1109/access.2019.2938007
-Rintala, J. (2024) ‘CNN + LSTM with Parallel Branches for Speech Emotion Recognition’, DiVA Portal. https://www.diva-portal.org/smash/get/diva2:1456228/FULLTEXT01.pdf
-Sayed, N. et al. (2025) ‘A Combine CNN-RNN Based Approach for Augmenting the Performance of Speech Emotions Recognition’, Traitement du Signal, 42(2), pp. 647–662. https://doi.org/10.18280/ts.420205
-Sivanagaraja, T. et al. (2017) ‘End-to-End Speech Emotion Recognition Using Multi-Scale Convolution Networks’, DR-NTU, Nanyang Technological University. https://doi.org/10.1109/apsipa.2017.8282026
-Xu, C. et al. (2024) ‘A New Network Structure for Speech Emotion Recognition Research’, Sensors, 24(5), p. 1429. https://doi.org/10.3390/s24051429
-Xu, X. et al. (2022) ‘Multi-Type Features Separating Fusion Learning for Speech Emotion Recognition’, Applied Soft Computing, 130, p. 109648. https://doi.org/10.1016/j.asoc.2022.109648
-Zhao, J., Mao, X. and Chen, L. (2019) ‘Speech Emotion Recognition Using Deep 1D & 2D CNN LSTM Networks’, Biomedical Signal Processing and Control. https://doi.org/10.1016/j.bspc.2018.08.035
+### References
+Amjad, A., Khan, L. and Chang, H.-T. (2021) ‘Effect on speech emotion classification of a feature selection approach using a convolutional neural network’, PeerJ Computer Science, 7, p. e766. https://doi.org/10.7717/peerj-cs.766  
+
+Cai, X. et al. (2021) ‘Speech Emotion Recognition with Multi-Task Learning’, Interspeech 2021. https://doi.org/10.21437/interspeech.2021-1852  
+
+Chen, M. et al. (2018) ‘3-D Convolutional Recurrent Neural Networks With Attention Model for Speech Emotion Recognition’, IEEE Signal Processing Letters, 25(10), pp. 1440–1444. https://doi.org/10.1109/lsp.2018.2860246  
+
+Chernykh, V. and Prikhodko, P. (2018) ‘Emotion Recognition from Speech with Recurrent Neural Networks’, arXiv preprint. https://doi.org/10.48550/arXiv.1701.08071  
+
+Farooq, M. et al. (2020) ‘Impact of Feature Selection Algorithm on Speech Emotion Recognition Using Deep Convolutional Neural Network’, Sensors, 20(21), p. 6008. https://doi.org/10.3390/s20216008  
+
+Fayek, H.M., Lech, M. and Cavedon, L. (2017) ‘Evaluating deep learning architectures for Speech Emotion Recognition’, Neural Networks, 92, pp. 60–68. https://doi.org/10.1016/j.neunet.2017.02.013  
+
+Han, K., Yu, D. and Tashev, I. (2014) ‘Speech Emotion Recognition Using Deep Neural Network and Extreme Learning Machine’, Interspeech 2014. https://doi.org/10.21437/interspeech.2014-57  
+
+Latif, S. et al. (2019) ‘Direct Modelling of Speech Emotion from Raw Speech’, arXiv preprint. https://doi.org/10.48550/arxiv.1904.03833  
+
+Meng, H. et al. (2019) ‘Speech Emotion Recognition From 3D Log-Mel Spectrograms With Deep Learning Network’, IEEE Access, 7, pp. 125868–125881. https://doi.org/10.1109/access.2019.2938007  
+
+Rintala, J. (2024) ‘CNN + LSTM with Parallel Branches for Speech Emotion Recognition’, DiVA Portal. https://www.diva-portal.org/smash/get/diva2:1456228/FULLTEXT01.pdf  
+
+Sayed, N. et al. (2025) ‘A Combine CNN-RNN Based Approach for Augmenting the Performance of Speech Emotions Recognition’, Traitement du Signal, 42(2), pp. 647–662. https://doi.org/10.18280/ts.420205  
+
+Sivanagaraja, T. et al. (2017) ‘End-to-End Speech Emotion Recognition Using Multi-Scale Convolution Networks’, DR-NTU, Nanyang Technological University. https://doi.org/10.1109/apsipa.2017.8282026  
+
+Xu, C. et al. (2024) ‘A New Network Structure for Speech Emotion Recognition Research’, Sensors, 24(5), p. 1429. https://doi.org/10.3390/s24051429  
+
+Xu, X. et al. (2022) ‘Multi-Type Features Separating Fusion Learning for Speech Emotion Recognition’, Applied Soft Computing, 130, p. 109648. https://doi.org/10.1016/j.asoc.2022.109648  
+
+Zhao, J., Mao, X. and Chen, L. (2019) ‘Speech Emotion Recognition Using Deep 1D & 2D CNN LSTM Networks’, Biomedical Signal Processing and Control. https://doi.org/10.1016/j.bspc.2018.08.035  
 
 
