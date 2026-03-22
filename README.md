@@ -35,7 +35,7 @@ All scripts are designed to be cross-platform. However as of now tensorflow is e
 See train_baselines.py for instructions and explanations of the necessary arguments
 
 5. For the Deep Learning modes, you must first preprocess the dataset. This is performed with preprocess_dataset.py, the arguments required are given and explained within that script's source code.
-   To recreate my results refer to the DL_Models.md documentation in /models/ and select the appropriate sample rate and sample duration, for a given model. Depending on the dataset, it may also be neccesary to perform this step twice with and without Z-score normalisation    on the dataset, as certain models benefited from this, while others did not.
+   To recreate my results refer to the DL_Models.md documentation in /models/ and select the appropriate sample rate and sample duration, for a given model. Depending on the dataset, it may also be neccesary to perform this step twice with and without Z-score normalisation on the dataset, as certain models benefited from this, while others did not.
    
 7. Train the model using train_model.py - If you wish to recreate my results refer to the DL_Models.md document in /models/ and input the arguments I provide for a given model.
 
@@ -107,7 +107,7 @@ All classifiers used features extracted from 4 seconds of audio only, at a sampl
 |SAVEE | 65% |  
 |IEMOCAP | 50.45% |  
 
-Details of the individual models forming the ensembles, including their architectures and hyperparameters, are available in DL_models.txt located in the /models/ directory.
+Details of the individual models forming the ensembles, including their architectures and hyperparameters, are available in DL_models.txt located in the /models/ directory. In the interest of brevity, this summary does not discuss the rationale behind hyperparameters and provide justifications for choices. 
 
 
 # Comparison With Contemporary Research
