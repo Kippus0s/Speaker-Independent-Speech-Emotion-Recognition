@@ -107,7 +107,7 @@ All classifiers used features extracted from 4 seconds of audio only, at a sampl
 |SAVEE | 65% |  
 |IEMOCAP | 50.45% |  
 
-Details of the individual models forming the ensembles, including their architectures and hyperparameters, are available in DL_models.txt located in the /models/ directory. In the interest of brevity, this summary does not discuss the rationale behind hyperparameters and provide justifications for choices. 
+Details of the individual models forming the ensembles, including their architectures and hyperparameters, are available in DL_models.txt located in the /models/ directory. In the interest of brevity, this summary does not discuss the rationale behind hyperparameters and provide justifications for choices, which were informed by both literature review and my own experimentation. A full discussion of model architectures and design decisions were provided in my original disseration and will be included in a future adaption.
 
 
 # Comparison With Contemporary Research
