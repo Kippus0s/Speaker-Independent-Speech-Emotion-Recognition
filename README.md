@@ -60,7 +60,7 @@ For the DL approach, I utilised a simple approach relative to the state of the a
 
 Results were compared across the four datasets, between the CNN models and the different data representations, and between the DL and traditional ML classifier.
 
-Most of the time on my project was spent researching, and experimenting with data preprocessing optimisations, for example regarding neural network architecture optimisations for the CNNs, and after multiple iterations the DL approach outperformed the traditional ML approach despite it's leveraging of heuristic features. 
+Most of the time on my project was spent researching, and experimenting with data preprocessing optimisations, for example regarding neural network architecture optimisations for the CNNs. After multiple iterations the DL approach outperformed the traditional ML approach despite it's leveraging of heuristic features. 
 
 Four datasets for SER were used, EmoDB, IEMOCAP, SAVEE, and RAVDESS, and between them I try and capture a balance and variety in dataset attributes. 
 
