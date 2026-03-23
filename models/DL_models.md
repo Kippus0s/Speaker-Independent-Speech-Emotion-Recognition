@@ -1,3 +1,5 @@
+# Introduction
+
 Speech Emotion Recognition (SER) is a challenging task in machine learning, and the datasets are too dissimilar for a one-size-fits-all model to allow for a uniform comparison. A single Logistic Regression model was used as a baseline for traditional machine learning approaches with minimal preprocessing, as openSMILE feature extraction produces fixed-length feature vectors regardless of input duration. While the raw audio samples were variable in length, the use of a maximum duration parameter of 4 seconds removed the need for explicit duration normalisation. In contrast, deep learning models require uniform input sizes, and as a result, fixed-length samples are standard practice in the domain.
 
 Across all datasets, model architecture was driven primarily by the input representation rather than the dataset itself. Models trained on raw waveforms consistently used eight convolutional layers, reflecting the high dimensionality of the input. Mel spectrogram and MFCC models used only four convolutional layers due to lower input dimensionality, but a Dropout layer was frequently applied in Mel/MFCC models for regularisation, and dense layers were occasionally added, as in the RAVDESS models. In the case of RAVDESS, which contains a relatively large number of speakers (24), the dense layer provided additional capacity to capture more complex patterns in a speaker-independent setting. Because test speakers were never seen during training, any speaker-correlated patterns learned by the network contribute positively to generalisation, helping the model distinguish emotions across unseen speakers without overfitting to individual identities.
@@ -10,6 +12,7 @@ The number of training epochs was set to 50 for waveform models, as their larger
 
 Lower-level architectural details, such as CNN filter and pooling sizes, are not reported here for brevity, though they were carefully tuned for each dataset and input representation.
 
+# DL Models
 
 | Model Name       | Dataset  | Preprocessing                               | Sample rate | Duration | Batch size | Max epochs | Class-Weight Normalisation | Accuracy |
 |-----------------|---------|--------------------------------------------|------------|---------|------------|------------|---------------------------|---------|
