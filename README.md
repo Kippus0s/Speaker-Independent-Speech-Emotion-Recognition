@@ -5,7 +5,7 @@ This project was created to prove the integrity of my results, and as an updated
 
 # Instructions
 
-All scripts are designed to be cross-platform. However as of now tensorflow is effectively linux-only due to CUDA compatibility, if you circumvent this by disabling such functionality you may see different results to those purported here.
+All scripts are designed to be cross-platform. However, the recent versions of TensorFlow are effectively linux-only due to CUDA compatibility. Circumvententing this by disabling hardware acceleration or using an older version of tensorflow, you may see different results from those reported here.
 
 1. Download the SER dataset(s), and download this repository. (If you are only interested in verifying the post-decision fusion ensemble results, you can simply download the model_predictions folder and scripts from this repository and run ensemble.py from the command-line using the arguments explained in the comments of ensemble.py)
    
